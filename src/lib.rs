@@ -11,3 +11,5 @@ pub mod compute;
 #[cfg(feature = "vulkan")]
 pub mod vulkan_compute;
 pub mod rasterizer;
+pub mod sgpu_command;
+pub mod sgpu_compute;

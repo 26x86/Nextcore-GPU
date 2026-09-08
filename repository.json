@@ -1,18 +1,34 @@
 {
-  "schema": "26x86.repository/1",
+  "schema": "26x86.repository/2",
   "name": "Nextcore-GPU",
   "owner": "26x86",
   "public": true,
   "role": "nextcore-module",
   "crate": "nextcore-gpu",
-  "description": "graphics API contracts and an optional host Vulkan backend",
-  "source_path": "nextcore/crates/nextcore-gpu",
-  "source_commit": "dcc90013109eac694ccbf997b1e44a7018480f78",
-  "depends_on": [],
-  "initial_tag": "26x86-Nextcore-GPU-v0.1.0",
-  "generated_utc": "2026-09-08T06:40:11.341759+00:00",
-  "release_tag": "26x86-Nextcore-GPU-v0.1.1",
-  "previous_head": "29701f17ea98b64bbabd05d75a7e09a25f64f246",
-  "dependency_tags": {},
-  "export_method": "immutable git objects applied to existing main; manifest dependency rewrite only"
+  "description": "Graphics resource contracts, software rendering, and optional ordered host Vulkan compute with bounded native pipeline reuse.",
+  "development": {
+    "branch": "codex/arm64e-boot-metal",
+    "base_commit": "84b881e8129774acee3e4faf944e833c407711fd",
+    "updated_utc": "2026-09-08T13:15:57.134625+00:00",
+    "dependency_revisions": {},
+    "integration": "Git submodule with an immutable gitlink; workspace source patches for local development"
+  },
+  "release_provenance": {
+    "schema": "26x86.repository/1",
+    "name": "Nextcore-GPU",
+    "owner": "26x86",
+    "public": true,
+    "role": "nextcore-module",
+    "crate": "nextcore-gpu",
+    "description": "graphics API contracts and an optional host Vulkan backend",
+    "source_path": "nextcore/crates/nextcore-gpu",
+    "source_commit": "dcc90013109eac694ccbf997b1e44a7018480f78",
+    "depends_on": [],
+    "initial_tag": "26x86-Nextcore-GPU-v0.1.0",
+    "generated_utc": "2026-09-08T06:40:11.341759+00:00",
+    "release_tag": "26x86-Nextcore-GPU-v0.1.1",
+    "previous_head": "29701f17ea98b64bbabd05d75a7e09a25f64f246",
+    "dependency_tags": {},
+    "export_method": "immutable git objects applied to existing main; manifest dependency rewrite only"
+  }
 }
