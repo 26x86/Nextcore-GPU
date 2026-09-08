@@ -1,0 +1,15 @@
+
+running 10 tests
+test vulkan_compute::tests::host_memory_selection_respects_buffer_bits_coherency_and_shared_heaps ... ok
+test vulkan_compute::tests::duplicate_uuid_and_wrong_ids_never_choose_a_candidate ... ok
+test vulkan_compute::tests::memory_type_index_31_and_malformed_counts_are_checked ... ok
+test vulkan_compute::tests::optional_memory_features_are_not_silently_used ... ok
+test vulkan_compute::tests::authored_fixture_profile ... ok
+test vulkan_compute::tests::unsupported_diagnostics_report_all_failed_baseline_requirements ... ok
+test vulkan_compute::tests::rejects_nonzero_descriptor_set_and_conflicting_workgroup_builtin ... ok
+test vulkan_compute::tests::uuid_selects_same_model_without_first_device_or_vendor_policy ... ok
+test vulkan_compute::tests::virtual_device_remains_unsupported_and_low_capacity_is_explicit ... ok
+test vulkan_compute::tests::rejects_bad_header_truncation_entry_and_optional_capabilities ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

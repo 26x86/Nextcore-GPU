@@ -1,0 +1,2 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+  Executable unittests src/lib.rs (target/x86_64-pc-windows-msvc/debug/deps/nextcore_gpu-9a66723e1cf0808e.exe)

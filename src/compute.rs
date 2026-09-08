@@ -99,6 +99,14 @@ impl ComputePipelineManager {
         Ok(manager)
     }
 
+    /// Preserve the two-ID API while explicitly selecting one physical GPU UUID.
+    #[cfg(feature = "vulkan")]
+    pub fn with_vulkan_device_uuid(config: crate::vulkan_compute::VulkanComputeConfig, device_uuid: [u8; 16]) -> Result<Self, ComputeError> {
+        let mut manager = Self::new();
+        manager.vulkan = Some(crate::vulkan_compute::VulkanComputeBackend::new_for_device_uuid(config, device_uuid)?);
+        Ok(manager)
+    }
+
     #[cfg(feature = "vulkan")]
     pub fn vulkan_device_info(&self) -> Option<&crate::vulkan_compute::VulkanDeviceInfo> {
         self.vulkan.as_ref().map(|backend| backend.device_info())

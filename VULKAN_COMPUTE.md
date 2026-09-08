@@ -14,6 +14,13 @@ The config requires exact nonzero vendor/device IDs, an explicitly trusted
 Khronos `spirv-val` executable, and a fence timeout in `(0, 5 seconds]`. Only one
 matching integrated/discrete GPU is accepted. CPU/virtual devices and ambiguous
 selectors are rejected. `robustBufferAccess` must be supported and is enabled.
+To distinguish identical GPU models, use `with_vulkan_device_uuid(config, uuid)`;
+both configured IDs and the observed 16-byte device UUID must match exactly.
+Duplicate UUID reports also fail, and there is no automatic first-device choice.
+`enumerate_vulkan_devices()` reports actual device/driver UUIDs, compute queues,
+required features, relevant device limits and memory flags/heaps, with baseline
+unsupported reasons. Passing baseline checks does not promise that a particular
+buffer memory type, shader, allocation or driver submission will succeed.
 
 Supported inputs are SPIR-V 1.0–1.3 with only Shader capability, Logical/GLSL450
 memory model, one compute entry point and literal LocalSize. A WorkgroupSize
@@ -29,9 +36,14 @@ of the same host buffer is explicitly unsupported. The view is uploaded into a
 separate Vulkan buffer, so its Vulkan descriptor offset is zero. Actual device
 storage/compute limits and the 16,777,216 total-invocation cap are also checked.
 
-Dispatch uploads to HOST_VISIBLE|HOST_COHERENT memory, records compute and a
-COMPUTE_SHADER/SHADER_WRITE → HOST/HOST_READ buffer barrier, submits with a real
-Vulkan fence, waits, and reads every buffer back. Only then are host buffers
+Dispatch chooses compatible HOST_VISIBLE memory from the buffer's actual
+memoryTypeBits, heap index and allocation size, preferring coherent/cached types.
+Types requiring unenabled protected/device-coherent memory features are excluded.
+It maps the whole allocation and flushes noncoherent uploads before submission.
+It records compute and a COMPUTE_SHADER/SHADER_WRITE → HOST/HOST_READ buffer
+barrier, submits with a real Vulkan fence, waits, and invalidates noncoherent
+mapped memory before reading every buffer back. Offset zero and WHOLE_SIZE over
+the complete allocation satisfy the nonCoherentAtomSize end-of-object rule. Only then are host buffers
 updated together and the manager fence signaled. The destination fence must
 exist and be unsignaled. Failed validation/dispatch leaves host data uncommitted.
 
@@ -168,3 +180,35 @@ passed bounds/lifetime/rejection checks. The complete example executed eight
 GPU dispatches. [The receipt](validation/sgpu-wire-rx6800xt-20260908/receipt.json)
 and [contract](SGPU_COMPUTE.md) distinguish this host-side wire validation from
 an actual guest driver or EFI Metal backend, both still unverified.
+
+## Portable device selection (BP28)
+
+Enumerate without initializing a logical GPU device:
+
+```sh
+target/debug/examples/vulkan_compute --list
+```
+
+The existing three arguments remain supported. A fourth argument accepts the
+observed device UUID as exactly 32 hexadecimal digits (without separators):
+
+```sh
+target/debug/examples/vulkan_compute 1002 73bf /path/to/spirv-val DEVICE_UUID_HEX
+```
+
+Selection and memory decisions use queried capabilities, never a vendor allowlist.
+The public inventory exposes raw Vulkan queue/memory flag bits and heap sizes;
+it does not relabel shared system memory as dedicated VRAM. The existing authored
+acceptance arithmetic and SGPU submission remain the execution oracle. See
+[the scoped contract](PORTABLE_VULKAN_DEVICES.md) for memory synchronization and
+validation limits. Actual NVIDIA and Intel integrated devices, guest Metal and
+physical EFI GPU command submission still require their own execution evidence.
+
+The [BP28 final receipt](validation/bp28-portable-rx6800xt-20260909/receipt.json)
+records both selection paths on the available RX 6800 XT and explicit absent-UUID
+rejection. Each successful path completed eight hardware dispatches, 1,536
+internally checked readback values and three pipeline compilations. All 1,024
+values present in each stdout were independently recomputed. All observed
+host-visible types were coherent, so noncoherent physical execution remains
+unverified. Default/Vulkan/native-Windows test totals are 109/119/10 respectively;
+the explicitly invoked llvmpipe lifecycle test is separate software evidence.
