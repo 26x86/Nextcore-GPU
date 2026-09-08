@@ -8,14 +8,21 @@ use nextcore_gpu::{
     sgpu_compute::{SgpuComputeError, SgpuComputeSession},
     sync::GpuSyncManager,
     texture::TextureManager,
-    vulkan_compute::{VulkanComputeConfig, VulkanDeviceSelector},
+    vulkan_compute::{enumerate_vulkan_devices, VulkanComputeConfig, VulkanDeviceSelector},
 };
 use std::{error::Error, path::PathBuf, time::Duration};
 
 fn run() -> Result<(), Box<dyn Error>> {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
-    if args.len() != 3 {
-        return Err("usage: vulkan_compute <vendor-hex> <device-hex> <spirv-val-path>".into());
+    if args.len() == 1 && args[0] == "--list" {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&enumerate_vulkan_devices()?)?
+        );
+        return Ok(());
+    }
+    if !matches!(args.len(), 3 | 4) {
+        return Err("usage: vulkan_compute --list | <vendor-hex> <device-hex> <spirv-val-path> [32-digit-device-uuid]".into());
     }
     let hexadecimal = |arg: &std::ffi::OsStr| -> Result<u32, Box<dyn Error>> {
         Ok(u32::from_str_radix(
@@ -25,14 +32,27 @@ fn run() -> Result<(), Box<dyn Error>> {
             16,
         )?)
     };
-    let mut manager = ComputePipelineManager::with_vulkan(VulkanComputeConfig {
+    let config = VulkanComputeConfig {
         selector: VulkanDeviceSelector {
             vendor_id: hexadecimal(&args[0])?,
             device_id: hexadecimal(&args[1])?,
         },
         spirv_validator: PathBuf::from(&args[2]),
         fence_timeout: Duration::from_secs(3),
-    })?;
+    };
+    let mut manager = if let Some(uuid) = args.get(3) {
+        let uuid = uuid.to_str().ok_or("non-UTF8 UUID")?;
+        if uuid.len() != 32 || !uuid.is_ascii() {
+            return Err("UUID must contain exactly 32 hexadecimal digits".into());
+        }
+        let mut bytes = [0u8; 16];
+        for (i, byte) in bytes.iter_mut().enumerate() {
+            *byte = u8::from_str_radix(&uuid[i * 2..i * 2 + 2], 16)?;
+        }
+        ComputePipelineManager::with_vulkan_device_uuid(config, bytes)?
+    } else {
+        ComputePipelineManager::with_vulkan(config)?
+    };
     let device = manager
         .vulkan_device_info()
         .ok_or("missing device info")?

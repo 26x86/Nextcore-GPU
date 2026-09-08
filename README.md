@@ -62,7 +62,7 @@ command codec, rejects malformed counts and ranges before allocation, and maps
 explicitly registered resources/kernels into the same compute executor.
 [Physical wire-path validation](validation/sgpu-wire-rx6800xt-20260908/README.md)
 passed on the RX 6800 XT: one buffer copy, two GPU dispatches, 256 checked final
-values, guards, rejection and resource-lifetime checks. Current suites pass 109
+values, guards, rejection and resource-lifetime checks. That milestone passed 109
 GPU default tests, 112 GPU Vulkan tests (one ignored), and 48 APLS tests. Actual
 guest driver submission and EFI GPU command submission remain unverified.
 
@@ -93,3 +93,21 @@ and private `_isolated` paths.
 This repository contains public source and an independently authored shader test
 fixture. It includes no Apple firmware, operating-system binaries, or private
 research inputs. The [repository license](LICENSE.txt) applies.
+
+## BP28 portable host GPU selection
+
+The Vulkan backend now exposes actual queue/feature/compute-limit/memory inventory
+and accepts an explicit device UUID to distinguish identical GPU models while
+preserving the existing two-ID constructor. Compatible noncoherent host-visible
+memory uses explicit flush/invalidate; memory types requiring unenabled optional
+features are excluded. Device selection and memory decisions use actual Vulkan
+capabilities without a vendor allowlist or automatic fallback.
+
+The [BP28 hardware receipt](validation/bp28-portable-rx6800xt-20260909/receipt.json)
+records successful legacy-ID and observed-UUID runs on the RX 6800 XT: eight GPU
+dispatches each, checked readback and shader-cache/SGPU behavior. Vulkan tests
+passed 119, default tests 109 and native Windows library tests 10. NVIDIA/Intel
+integrated hardware and a real noncoherent allocation remain unverified, as do
+physical EFI GPU submission and guest macOS Metal. See
+[the implementation contract](PORTABLE_VULKAN_DEVICES.md) and
+[Vulkan usage](VULKAN_COMPUTE.md).

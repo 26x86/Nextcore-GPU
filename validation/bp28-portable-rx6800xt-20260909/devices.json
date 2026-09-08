@@ -1,0 +1,214 @@
+[
+  {
+    "vendor_id": 4098,
+    "device_id": 29631,
+    "name": "AMD Radeon RX 6800 XT",
+    "device_type": "DISCRETE_GPU",
+    "api_version": 4211003,
+    "driver_version": 8388961,
+    "device_uuid": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver_uuid": [
+      65,
+      77,
+      68,
+      45,
+      87,
+      73,
+      78,
+      45,
+      68,
+      82,
+      86,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "robust_buffer_access": true,
+    "queue_families": [
+      {
+        "index": 0,
+        "queue_count": 8,
+        "flags": 15
+      },
+      {
+        "index": 1,
+        "queue_count": 4,
+        "flags": 14
+      },
+      {
+        "index": 2,
+        "queue_count": 2,
+        "flags": 12
+      },
+      {
+        "index": 3,
+        "queue_count": 2,
+        "flags": 64
+      },
+      {
+        "index": 4,
+        "queue_count": 1,
+        "flags": 32
+      },
+      {
+        "index": 5,
+        "queue_count": 1,
+        "flags": 32
+      }
+    ],
+    "memory_types": [
+      {
+        "index": 0,
+        "property_flags": 1,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 1,
+        "property_flags": 6,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 2,
+        "property_flags": 7,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 3,
+        "property_flags": 14,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 4,
+        "property_flags": 193,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 5,
+        "property_flags": 198,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 6,
+        "property_flags": 199,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 7,
+        "property_flags": 206,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 8,
+        "property_flags": 1,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 9,
+        "property_flags": 6,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 10,
+        "property_flags": 7,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 11,
+        "property_flags": 14,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 12,
+        "property_flags": 193,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 13,
+        "property_flags": 198,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 14,
+        "property_flags": 199,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 15,
+        "property_flags": 206,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      }
+    ],
+    "limits": {
+      "max_workgroup_count": [
+        4294967295,
+        65535,
+        65535
+      ],
+      "max_workgroup_size": [
+        1024,
+        1024,
+        1024
+      ],
+      "max_workgroup_invocations": 1024,
+      "max_storage_buffer_range": 4294967295,
+      "max_per_stage_storage_buffers": 4294967295,
+      "max_descriptor_set_storage_buffers": 4294967295,
+      "max_per_stage_resources": 4294967295,
+      "max_bound_descriptor_sets": 32,
+      "max_memory_allocation_count": 4294967295,
+      "non_coherent_atom_size": 128
+    },
+    "unsupported_reasons": []
+  }
+]

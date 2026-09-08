@@ -14,4 +14,10 @@ jobs:
       - run: cargo test --all-targets
       - name: Optional Vulkan backend and command dispatch
         run: cargo test --all-targets --features vulkan
-      - run: cargo test --all-targets --features vulkan
+  windows-vulkan-unit:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Compile and exercise native Windows Vulkan library paths
+        run: cargo test --lib --features vulkan vulkan_compute::tests

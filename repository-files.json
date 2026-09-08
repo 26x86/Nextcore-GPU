@@ -3,13 +3,13 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 28,
-      "sha256": "4b0f1fc438f30f25abe421b7542e9f3803b8b5c15ca3695614222e2bc547a9fe"
+      "bytes": 147,
+      "sha256": "101140ce4f6b82f2aa123280ff64be44277809261972f65055af179d12dfb93e"
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 441,
-      "sha256": "5525a29fd6ed6b96a77a09bec83d0f36e5e4d868ce62d0d24d71c34bb9f65c73"
+      "bytes": 666,
+      "sha256": "36536203890435b1fe51cf0c4b9f4cd2c4d5df565ac4da56953491ee5a7c6b6a"
     },
     {
       "path": ".gitignore",
@@ -27,9 +27,14 @@
       "sha256": "77c458ccb6116400cf960f8951630bc3b8b34731b56ffbd736b95c2b78449104"
     },
     {
+      "path": "PORTABLE_VULKAN_DEVICES.md",
+      "bytes": 4262,
+      "sha256": "f5e7a24781cca4ce1320bcb3c15860d679e674969aee41b8ed3a1b00b871e4ca"
+    },
+    {
       "path": "README.md",
-      "bytes": 5042,
-      "sha256": "3b51f17d182a310c7040f129b6fc1d64e808be8dfe54837bd848a3ca31a3e8df"
+      "bytes": 6103,
+      "sha256": "00e78990c1da6ef03687f1a2b7c8782c1e8cc96ef8072d6acf1496a45e7eceb6"
     },
     {
       "path": "SGPU_COMPUTE.md",
@@ -38,18 +43,18 @@
     },
     {
       "path": "VULKAN_COMPUTE.md",
-      "bytes": 10337,
-      "sha256": "aed642416a77863bf337fb21051221dd3ba07c6d41a9811b70a36d913b93e841"
+      "bytes": 12894,
+      "sha256": "3e9370ac1d111169ba9853f4d3f28ff12ff2f19af1d8d80e456aca431ffbe609"
     },
     {
       "path": "examples/vulkan_compute.rs",
-      "bytes": 17211,
-      "sha256": "88383294c1f023feca760487090b42e06b3e06ab5c0b5a921cc6ff94057421c7"
+      "bytes": 18007,
+      "sha256": "57d45f255d9cec1ed296b51e8a2e8d8a84d8b5f018050bd548210ef14523e90c"
     },
     {
       "path": "repository.json",
-      "bytes": 1392,
-      "sha256": "0b9798a470f9e944ad2cade56f8c1054707ded4bfc801d5175715859319037fa"
+      "bytes": 1395,
+      "sha256": "a03b91623956eb41c08346363508f45bab47347c95d992ace6e4f17084711cb1"
     },
     {
       "path": "src/adapters/amd.rs",
@@ -83,8 +88,8 @@
     },
     {
       "path": "src/compute.rs",
-      "bytes": 9338,
-      "sha256": "56b91faab60326ecff5ed5fe8d9b3ac6563fea4c16a57c0f73eb57f05c0e9715"
+      "bytes": 9778,
+      "sha256": "8db36902f2adb89fd1b33c47a53901643832eeb8508a55b61aa90c410bd80b4e"
     },
     {
       "path": "src/framebuffer.rs",
@@ -138,8 +143,8 @@
     },
     {
       "path": "src/vulkan_compute.rs",
-      "bytes": 42580,
-      "sha256": "7bae88b23dfb8f07751e323fb5bc2620335415afeed633236373e328c064aab7"
+      "bytes": 64212,
+      "sha256": "a68a9a577eba5b87ab0fd41d0ff5847e53b2bee4d2769737caee097a20c1d8a2"
     },
     {
       "path": "tests/fixtures/storage_transform.comp",
@@ -205,6 +210,101 @@
       "path": "tests/sgpu_submission.rs",
       "bytes": 11145,
       "sha256": "5b99707640c204d8f4c97f61d08c810332fbea11909a2695dc8af2a33d24bc88"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/README.md",
+      "bytes": 2525,
+      "sha256": "0a6ad11be592adc1568cf65727fd40f4388b11c5c7ae482b36f6d07d8f09497a"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/cargo-lock.toml",
+      "bytes": 4228,
+      "sha256": "1b4bed7873a71123aab046f78c7938f04a92f62b5567bf1ae9d8e266f100696d"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/cross-build.log",
+      "bytes": 133,
+      "sha256": "fff1e1bc874f5517b2bb42edadc1db06c592bf9ac5fd1d2f32f7a260f0b947c4"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/default-tests.log",
+      "bytes": 7272,
+      "sha256": "be84605b51ef08f74481d35c2b9799720a049b39f8914cecf2a7eb8e2575ba50"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/devices.json",
+      "bytes": 4126,
+      "sha256": "106ecfb679f152cb7562b6a969344a01afc45be24772ea94bfd816b54601eda1"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/devices.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/legacy.json",
+      "bytes": 16069,
+      "sha256": "c1a408c892d9f84cfb92a306b1f9e4fcfd575672c3c50a484c2c972be67cbaa1"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/legacy.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/receipt.json",
+      "bytes": 10278,
+      "sha256": "a4c68a4c6dd0548131777dfc49e5cafd1a6ed1e8abaed3b7e0aac8e3da827d11"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/software-lifecycle.log",
+      "bytes": 646,
+      "sha256": "db7bec1f26075eb480250ddcef86d10bec7f0cd02c7e70c257439bdf953abf53"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/uuid.json",
+      "bytes": 16069,
+      "sha256": "c1a408c892d9f84cfb92a306b1f9e4fcfd575672c3c50a484c2c972be67cbaa1"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/uuid.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/vulkan-tests.log",
+      "bytes": 8661,
+      "sha256": "683b0c23a3c54e7c570febfae40d88a5540456505b2bbd7ac7c771a7b9dc29ca"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-devices.json",
+      "bytes": 171,
+      "sha256": "9d2b44803c12158fff02f61df6312f4c27cd4f662fdbc3de75a4c0c992464c51"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-tests-build.log",
+      "bytes": 184,
+      "sha256": "63afe04e1f4aa61e2c664d2cc5c7770eb0d107f818102b6416ca1ad09939bd09"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-unit-tests.log",
+      "bytes": 1032,
+      "sha256": "ee98848e9afd9de785e6ec20c7b5b17cdfa095cc4059a6b1ebfd1ccf024810ba"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-unit-tests.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stderr.txt",
+      "bytes": 162,
+      "sha256": "37cbba9b821faad4d969d8a805f81d07d544dd006bd77ce5d1e9c3552eb326bb"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "validation/sgpu-wire-rx6800xt-20260908/README.md",

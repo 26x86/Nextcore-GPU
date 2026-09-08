@@ -1,0 +1,390 @@
+{
+  "schema": "nextcore.portable-vulkan.hardware-validation/1",
+  "recorded_utc": "2026-09-08T15:16:12.988489+00:00",
+  "source_base_commit": "34d617cca37d563d13ed0b0c966e2557921c6125",
+  "source_state": "BP28 worktree implementation before root integration commit",
+  "source_sha256": {
+    "src/vulkan_compute.rs": "a68a9a577eba5b87ab0fd41d0ff5847e53b2bee4d2769737caee097a20c1d8a2",
+    "src/compute.rs": "8db36902f2adb89fd1b33c47a53901643832eeb8508a55b61aa90c410bd80b4e",
+    "examples/vulkan_compute.rs": "57d45f255d9cec1ed296b51e8a2e8d8a84d8b5f018050bd548210ef14523e90c",
+    "tests/fixtures/storage_transform.comp": "6c65b3d938f82cf69c4eb9809fd735e51016dec51188c778345f35f94bebf3bd",
+    "tests/fixtures/storage_transform.spv": "12f8af8025b5d81f51bbe32d5a09911772b7990e46ef59c844b4dd82e27268ba"
+  },
+  "source_patches_only_for_validation": false,
+  "build": {
+    "host": "WSL2 Ubuntu 24.04",
+    "target": "x86_64-pc-windows-msvc",
+    "rustc": "1.98.1 (48a229cea 2026-09-01)",
+    "linker": "lld-link",
+    "windows_sdk": "10.0.26100.0",
+    "msvc_libraries": "14.44.35207",
+    "example_sha256": "e8060937e63e3ac5ed460d0df9650d9ecfd61e0777b66cf45027b4a7ce833783",
+    "windows_test_executable_sha256": "eddab1e497f3b266a19310453280f79c3ce8028d3c97e483fbce2344a6fa78b8",
+    "spirv_validator_sha256": "0b0572c1903606e3afd12e392f069e090b9d405f19b8c0cb787aff2a1d1d5548",
+    "cargo_lock": "cargo-lock.toml",
+    "build_command": "cargo build --offline --target x86_64-pc-windows-msvc --features vulkan --example vulkan_compute"
+  },
+  "tests": {
+    "vulkan-tests": {
+      "passed": 119,
+      "failed": 0,
+      "ignored": 1
+    },
+    "default-tests": {
+      "passed": 109,
+      "failed": 0,
+      "ignored": 0
+    },
+    "software-lifecycle": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "windows_unit_tests_passed": 10,
+  "new_independent_capability_memory_tests": 7,
+  "hardware_device": {
+    "vendor_id": 4098,
+    "device_id": 29631,
+    "name": "AMD Radeon RX 6800 XT",
+    "device_type": "DISCRETE_GPU",
+    "api_version": 4211003,
+    "driver_version": 8388961,
+    "device_uuid": [
+      0,
+      0,
+      0,
+      0,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "driver_uuid": [
+      65,
+      77,
+      68,
+      45,
+      87,
+      73,
+      78,
+      45,
+      68,
+      82,
+      86,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "robust_buffer_access": true,
+    "queue_families": [
+      {
+        "index": 0,
+        "queue_count": 8,
+        "flags": 15
+      },
+      {
+        "index": 1,
+        "queue_count": 4,
+        "flags": 14
+      },
+      {
+        "index": 2,
+        "queue_count": 2,
+        "flags": 12
+      },
+      {
+        "index": 3,
+        "queue_count": 2,
+        "flags": 64
+      },
+      {
+        "index": 4,
+        "queue_count": 1,
+        "flags": 32
+      },
+      {
+        "index": 5,
+        "queue_count": 1,
+        "flags": 32
+      }
+    ],
+    "memory_types": [
+      {
+        "index": 0,
+        "property_flags": 1,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 1,
+        "property_flags": 6,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 2,
+        "property_flags": 7,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 3,
+        "property_flags": 14,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 4,
+        "property_flags": 193,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 5,
+        "property_flags": 198,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 6,
+        "property_flags": 199,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 7,
+        "property_flags": 206,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 8,
+        "property_flags": 1,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 9,
+        "property_flags": 6,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 10,
+        "property_flags": 7,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 11,
+        "property_flags": 14,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 12,
+        "property_flags": 193,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 13,
+        "property_flags": 198,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      },
+      {
+        "index": 14,
+        "property_flags": 199,
+        "heap_index": 1,
+        "heap_size": 17163091968,
+        "heap_flags": 3
+      },
+      {
+        "index": 15,
+        "property_flags": 206,
+        "heap_index": 0,
+        "heap_size": 38585171968,
+        "heap_flags": 0
+      }
+    ],
+    "limits": {
+      "max_workgroup_count": [
+        4294967295,
+        65535,
+        65535
+      ],
+      "max_workgroup_size": [
+        1024,
+        1024,
+        1024
+      ],
+      "max_workgroup_invocations": 1024,
+      "max_storage_buffer_range": 4294967295,
+      "max_per_stage_storage_buffers": 4294967295,
+      "max_descriptor_set_storage_buffers": 4294967295,
+      "max_per_stage_resources": 4294967295,
+      "max_bound_descriptor_sets": 32,
+      "max_memory_allocation_count": 4294967295,
+      "non_coherent_atom_size": 128
+    },
+    "unsupported_reasons": []
+  },
+  "hardware_runs": [
+    {
+      "selector": "legacy",
+      "exit_code": 0,
+      "gpu_dispatches": 8,
+      "internal_checked_readback_values": 1536,
+      "independently_recomputed_stdout_values": 1024,
+      "native_pipeline_compilations": 3,
+      "recorded_and_sgpu_guards_passed": true
+    },
+    {
+      "selector": "uuid",
+      "exit_code": 0,
+      "gpu_dispatches": 8,
+      "internal_checked_readback_values": 1536,
+      "independently_recomputed_stdout_values": 1024,
+      "native_pipeline_compilations": 3,
+      "recorded_and_sgpu_guards_passed": true
+    }
+  ],
+  "observed_uuid_hex": "00000000060000000000000000000000",
+  "wrong_uuid": {
+    "exit_code": 1,
+    "fallback_denied": true,
+    "stdout_empty": true
+  },
+  "execution_environment": {
+    "native_windows": true,
+    "external_deadline_seconds": 45,
+    "driver_replaced": false,
+    "rebooted": false
+  },
+  "unverified": {
+    "nvidia_hardware": true,
+    "intel_integrated_hardware": true,
+    "noncoherent_hardware_allocation": true,
+    "guest_metal": true,
+    "physical_efi_gpu_command_backend": true,
+    "macos_boot": true
+  },
+  "limitations": [
+    "All host-visible memory types reported by the available hardware are HOST_COHERENT. Noncoherent allocation policy is tested with authored input fixtures; the physical noncoherent flush/invalidate branch remains unverified.",
+    "Enumeration is driver-reported baseline capability information, not proof of a supported guest or of every shader/allocation.",
+    "Two identical physical GPUs are not available; duplicate model/UUID selection is checked with independent fixtures."
+  ],
+  "evidence": [
+    {
+      "path": "cargo-lock.toml",
+      "sha256": "1b4bed7873a71123aab046f78c7938f04a92f62b5567bf1ae9d8e266f100696d",
+      "bytes": 4228
+    },
+    {
+      "path": "cross-build.log",
+      "sha256": "fff1e1bc874f5517b2bb42edadc1db06c592bf9ac5fd1d2f32f7a260f0b947c4",
+      "bytes": 133
+    },
+    {
+      "path": "default-tests.log",
+      "sha256": "be84605b51ef08f74481d35c2b9799720a049b39f8914cecf2a7eb8e2575ba50",
+      "bytes": 7272
+    },
+    {
+      "path": "devices.json",
+      "sha256": "106ecfb679f152cb7562b6a969344a01afc45be24772ea94bfd816b54601eda1",
+      "bytes": 4126
+    },
+    {
+      "path": "devices.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "legacy.json",
+      "sha256": "c1a408c892d9f84cfb92a306b1f9e4fcfd575672c3c50a484c2c972be67cbaa1",
+      "bytes": 16069
+    },
+    {
+      "path": "legacy.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "software-lifecycle.log",
+      "sha256": "db7bec1f26075eb480250ddcef86d10bec7f0cd02c7e70c257439bdf953abf53",
+      "bytes": 646
+    },
+    {
+      "path": "uuid.json",
+      "sha256": "c1a408c892d9f84cfb92a306b1f9e4fcfd575672c3c50a484c2c972be67cbaa1",
+      "bytes": 16069
+    },
+    {
+      "path": "uuid.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "vulkan-tests.log",
+      "sha256": "683b0c23a3c54e7c570febfae40d88a5540456505b2bbd7ac7c771a7b9dc29ca",
+      "bytes": 8661
+    },
+    {
+      "path": "windows-devices.json",
+      "sha256": "9d2b44803c12158fff02f61df6312f4c27cd4f662fdbc3de75a4c0c992464c51",
+      "bytes": 171
+    },
+    {
+      "path": "windows-tests-build.log",
+      "sha256": "63afe04e1f4aa61e2c664d2cc5c7770eb0d107f818102b6416ca1ad09939bd09",
+      "bytes": 184
+    },
+    {
+      "path": "windows-unit-tests.log",
+      "sha256": "ee98848e9afd9de785e6ec20c7b5b17cdfa095cc4059a6b1ebfd1ccf024810ba",
+      "bytes": 1032
+    },
+    {
+      "path": "windows-unit-tests.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "wrong-uuid.stderr.txt",
+      "sha256": "37cbba9b821faad4d969d8a805f81d07d544dd006bd77ce5d1e9c3552eb326bb",
+      "bytes": 162
+    },
+    {
+      "path": "wrong-uuid.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ]
+}
