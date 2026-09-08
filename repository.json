@@ -5,10 +5,14 @@
   "public": true,
   "role": "nextcore-module",
   "crate": "nextcore-gpu",
-  "description": "GPU compatibility policy and virtual-device contracts",
+  "description": "graphics API contracts and an optional host Vulkan backend",
   "source_path": "nextcore/crates/nextcore-gpu",
-  "source_commit": "3acb61b5c60e3519debb5a65cf47629c387e12cf",
+  "source_commit": "dcc90013109eac694ccbf997b1e44a7018480f78",
   "depends_on": [],
   "initial_tag": "26x86-Nextcore-GPU-v0.1.0",
-  "generated_utc": "2026-09-07T12:43:18.444077+00:00"
+  "generated_utc": "2026-09-08T06:40:11.341759+00:00",
+  "release_tag": "26x86-Nextcore-GPU-v0.1.1",
+  "previous_head": "29701f17ea98b64bbabd05d75a7e09a25f64f246",
+  "dependency_tags": {},
+  "export_method": "immutable git objects applied to existing main; manifest dependency rewrite only"
 }

@@ -1,4 +1,4 @@
-name: Nextcore-GPU CI
+name: NextCore GPU CI
 on:
   push:
   pull_request:
@@ -12,3 +12,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test --all-targets
+      - run: cargo test --all-targets --features vulkan
