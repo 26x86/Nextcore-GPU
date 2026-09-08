@@ -1,0 +1,1 @@
+vulkan_compute: unsupported or invalid compute input: exact Vulkan device IDs/UUID not found; fallback denied; enumerate_vulkan_devices reports available devices

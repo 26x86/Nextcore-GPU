@@ -39,7 +39,7 @@ pub struct VulkanComputeConfig {
     pub fence_timeout: Duration,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Default, Serialize)]
 pub struct VulkanDeviceInfo {
     pub vendor_id: u32,
     pub device_id: u32,
@@ -48,6 +48,69 @@ pub struct VulkanDeviceInfo {
     pub api_version: u32,
     pub queue_family: u32,
     pub robust_buffer_access: bool,
+    /// Actual physical-device report, not an assertion of guest Metal support.
+    pub capabilities: VulkanDeviceCandidate,
+}
+
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct VulkanQueueFamilyInfo {
+    pub index: u32,
+    pub queue_count: u32,
+    pub flags: u32,
+}
+
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct VulkanMemoryTypeInfo {
+    pub index: u32,
+    pub property_flags: u32,
+    pub heap_index: u32,
+    pub heap_size: u64,
+    pub heap_flags: u32,
+}
+
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct VulkanComputeLimits {
+    pub max_workgroup_count: [u32; 3],
+    pub max_workgroup_size: [u32; 3],
+    pub max_workgroup_invocations: u32,
+    pub max_storage_buffer_range: u32,
+    pub max_per_stage_storage_buffers: u32,
+    pub max_descriptor_set_storage_buffers: u32,
+    pub max_per_stage_resources: u32,
+    pub max_bound_descriptor_sets: u32,
+    pub max_memory_allocation_count: u32,
+    pub non_coherent_atom_size: u64,
+}
+
+/// Driver-reported baseline capabilities. Empty unsupported_reasons does not
+/// guarantee per-buffer memory compatibility, shader compilation or execution.
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct VulkanDeviceCandidate {
+    pub vendor_id: u32,
+    pub device_id: u32,
+    pub name: String,
+    pub device_type: String,
+    pub api_version: u32,
+    pub driver_version: u32,
+    /// None when the physical device does not provide the required Vulkan 1.1 ABI.
+    pub device_uuid: Option<[u8; 16]>,
+    pub driver_uuid: Option<[u8; 16]>,
+    pub robust_buffer_access: bool,
+    pub queue_families: Vec<VulkanQueueFamilyInfo>,
+    pub memory_types: Vec<VulkanMemoryTypeInfo>,
+    pub limits: VulkanComputeLimits,
+    pub unsupported_reasons: Vec<String>,
+}
+
+/// Inspect all actual loader-visible devices without creating a logical device.
+/// This never silently selects one or enables a software fallback.
+pub fn enumerate_vulkan_devices() -> Result<Vec<VulkanDeviceCandidate>, ComputeError> {
+    let session = Session::empty()?;
+    Ok(session
+        .probe_devices()?
+        .into_iter()
+        .map(|p| p.report)
+        .collect())
 }
 
 pub struct VulkanComputeBackend {
@@ -64,7 +127,23 @@ fn driver(error: vk::Result) -> ComputeError {
 }
 
 impl VulkanComputeBackend {
-    pub fn new(mut config: VulkanComputeConfig) -> Result<Self, ComputeError> {
+    pub fn new(config: VulkanComputeConfig) -> Result<Self, ComputeError> {
+        Self::new_selected(config, None)
+    }
+
+    /// Match both existing IDs and the explicitly selected physical device UUID.
+    /// Duplicate reports of the same UUID are still rejected as ambiguous.
+    pub fn new_for_device_uuid(
+        config: VulkanComputeConfig,
+        device_uuid: [u8; 16],
+    ) -> Result<Self, ComputeError> {
+        Self::new_selected(config, Some(device_uuid))
+    }
+
+    fn new_selected(
+        mut config: VulkanComputeConfig,
+        uuid: Option<[u8; 16]>,
+    ) -> Result<Self, ComputeError> {
         if config.selector.vendor_id == 0
             || config.selector.device_id == 0
             || config.fence_timeout.is_zero()
@@ -81,7 +160,7 @@ impl VulkanComputeBackend {
         if !config.spirv_validator.is_file() {
             return Err(invalid("spirv-val must be a regular executable file"));
         }
-        let session = Session::new(config.selector)?;
+        let session = Session::new_selected(config.selector, uuid, hardware_type)?;
         let info = session.info.clone();
         Ok(Self {
             config,
@@ -414,7 +493,7 @@ fn validate_module(validator: &Path, bytes: &[u8]) -> Result<(), ComputeError> {
 
 #[derive(Default)]
 struct Resources {
-    buffers: Vec<(vk::Buffer, vk::DeviceMemory)>,
+    buffers: Vec<(vk::Buffer, vk::DeviceMemory, bool)>,
     descriptor_pool: vk::DescriptorPool,
     command_pool: vk::CommandPool,
     fence: vk::Fence,
@@ -462,88 +541,289 @@ struct Session {
     in_flight: bool,
 }
 
-impl Session {
-    fn new(selector: VulkanDeviceSelector) -> Result<Self, ComputeError> {
-        Self::new_matching_type(selector, |kind| {
-            matches!(
-                kind,
-                vk::PhysicalDeviceType::INTEGRATED_GPU | vk::PhysicalDeviceType::DISCRETE_GPU
-            )
-        })
-    }
+struct DeviceProbe {
+    physical: vk::PhysicalDevice,
+    properties: vk::PhysicalDeviceProperties,
+    memory: vk::PhysicalDeviceMemoryProperties,
+    report: VulkanDeviceCandidate,
+}
 
-    // The public constructor always passes the hardware-only predicate above.
-    // Module-private injection permits an explicit software ICD lifecycle test.
-    fn new_matching_type(
-        selector: VulkanDeviceSelector,
-        allowed_type: impl Fn(vk::PhysicalDeviceType) -> bool,
-    ) -> Result<Self, ComputeError> {
-        // SAFETY: runtime Vulkan loader is explicitly supplied by the host.
+fn hardware_type(kind: &str) -> bool {
+    matches!(kind, "INTEGRATED_GPU" | "DISCRETE_GPU")
+}
+
+fn compute_family(report: &VulkanDeviceCandidate) -> Option<u32> {
+    report
+        .queue_families
+        .iter()
+        .find(|f| f.queue_count > 0 && f.flags & vk::QueueFlags::COMPUTE.as_raw() != 0)
+        .map(|f| f.index)
+}
+
+// No optional memory features are enabled on this logical device. In
+// particular DEVICE_COHERENT_AMD requires deviceCoherentMemory (VUID 02790).
+fn host_memory_flags(flags: vk::MemoryPropertyFlags) -> bool {
+    flags.contains(vk::MemoryPropertyFlags::HOST_VISIBLE)
+        && !flags.intersects(
+            vk::MemoryPropertyFlags::DEVICE_COHERENT_AMD
+                | vk::MemoryPropertyFlags::PROTECTED
+                | vk::MemoryPropertyFlags::LAZILY_ALLOCATED,
+        )
+}
+
+fn baseline_rejections(
+    report: &VulkanDeviceCandidate,
+    allowed_type: impl Fn(&str) -> bool,
+) -> Vec<String> {
+    let mut reasons = Vec::new();
+    if !allowed_type(&report.device_type) {
+        reasons.push(format!(
+            "device type {} is not an integrated/discrete GPU; CPU/virtual fallback denied",
+            report.device_type
+        ));
+    }
+    if vk::api_version_variant(report.api_version) != 0 || report.api_version < vk::API_VERSION_1_1
+    {
+        reasons.push("Vulkan 1.1 physical device required".into());
+    }
+    if !report.robust_buffer_access {
+        reasons.push("robustBufferAccess is required".into());
+    }
+    if compute_family(report).is_none() {
+        reasons.push("no nonempty compute queue".into());
+    }
+    if !report.memory_types.iter().any(|m| {
+        host_memory_flags(vk::MemoryPropertyFlags::from_raw(m.property_flags)) && m.heap_size >= 4
+    }) {
+        reasons.push(
+            "no feature-compatible HOST_VISIBLE memory heap large enough for a storage word".into(),
+        );
+    }
+    let limits = &report.limits;
+    if limits.max_workgroup_count.contains(&0)
+        || limits.max_workgroup_size.contains(&0)
+        || limits.max_workgroup_invocations == 0
+    {
+        reasons.push("compute workgroup limits cannot execute one invocation".into());
+    }
+    if limits.max_storage_buffer_range < 4
+        || limits.max_per_stage_storage_buffers == 0
+        || limits.max_descriptor_set_storage_buffers == 0
+        || limits.max_per_stage_resources == 0
+        || limits.max_bound_descriptor_sets == 0
+        || limits.max_memory_allocation_count == 0
+    {
+        reasons.push("storage/descriptor/allocation limits cannot bind one storage word".into());
+    }
+    if !limits.non_coherent_atom_size.is_power_of_two() {
+        reasons.push("invalid nonCoherentAtomSize reported by driver".into());
+    }
+    reasons
+}
+
+fn select_candidate(
+    reports: &[VulkanDeviceCandidate],
+    selector: VulkanDeviceSelector,
+    uuid: Option<[u8; 16]>,
+) -> Result<usize, ComputeError> {
+    let matching: Vec<_> = reports
+        .iter()
+        .enumerate()
+        .filter(|(_, r)| {
+            r.vendor_id == selector.vendor_id
+                && r.device_id == selector.device_id
+                && uuid.is_none_or(|id| r.device_uuid == Some(id))
+        })
+        .collect();
+    match matching.as_slice() {
+        [] => Err(invalid("exact Vulkan device IDs/UUID not found; fallback denied; enumerate_vulkan_devices reports available devices")),
+        [(index, report)] => {
+            if report.unsupported_reasons.is_empty() { Ok(*index) }
+            else { Err(invalid(format!("selected Vulkan device {} unsupported: {}", report.name, report.unsupported_reasons.join("; ")))) }
+        }
+        _ => Err(invalid("device selector is ambiguous; select a unique deviceUUID from enumerate_vulkan_devices (duplicate UUID reports are also rejected)")),
+    }
+}
+
+/// memoryTypeBits describes this buffer, not every memory type in the device.
+fn host_memory_type(
+    memory: &vk::PhysicalDeviceMemoryProperties,
+    bits: u32,
+    size: u64,
+) -> Result<(u32, bool), ComputeError> {
+    if size == 0 || memory.memory_type_count > 32 || memory.memory_heap_count > 16 {
+        return Err(invalid(
+            "invalid Vulkan allocation size or memory property counts",
+        ));
+    }
+    (0..memory.memory_type_count).filter_map(|index| {
+        let kind = memory.memory_types[index as usize];
+        if bits & (1u32 << index) == 0 || !host_memory_flags(kind.property_flags) || kind.heap_index >= memory.memory_heap_count || size > memory.memory_heaps[kind.heap_index as usize].size {
+            return None;
+        }
+        let coherent = kind.property_flags.contains(vk::MemoryPropertyFlags::HOST_COHERENT);
+        let cached = kind.property_flags.contains(vk::MemoryPropertyFlags::HOST_CACHED);
+        Some((index, coherent, u8::from(coherent) * 2 + u8::from(cached)))
+    }).max_by_key(|(index, _, rank)| (*rank, std::cmp::Reverse(*index)))
+      .map(|(index, coherent, _)| (index, coherent))
+      .ok_or_else(|| invalid(format!("no compatible HOST_VISIBLE memory: memoryTypeBits={bits:#010x}, allocation_size={size}; device-local-only memory is not host mappable; protected/device-coherent memory features are not enabled")))
+}
+
+impl Session {
+    fn empty() -> Result<Self, ComputeError> {
         let entry = unsafe { Entry::load() }.map_err(|e| invalid(format!("Vulkan loader: {e}")))?;
-        let app_name = c"Nextcore host compute";
+        let version = unsafe { entry.try_enumerate_instance_version() }
+            .map_err(driver)?
+            .unwrap_or(vk::API_VERSION_1_0);
+        if version < vk::API_VERSION_1_1 {
+            return Err(invalid("Vulkan loader 1.1 required"));
+        }
         let application = vk::ApplicationInfo::default()
-            .application_name(app_name)
+            .application_name(c"Nextcore host compute")
             .api_version(vk::API_VERSION_1_1);
         let create = vk::InstanceCreateInfo::default().application_info(&application);
         let instance = unsafe { entry.create_instance(&create, None) }.map_err(driver)?;
-        let mut session = Self {
+        Ok(Self {
             entry: Some(entry),
             instance,
             device: None,
             memory: Default::default(),
             limits: Default::default(),
             queue: vk::Queue::null(),
-            info: VulkanDeviceInfo {
-                vendor_id: selector.vendor_id,
-                device_id: selector.device_id,
-                name: String::new(),
-                device_type: String::new(),
-                api_version: 0,
-                queue_family: 0,
-                robust_buffer_access: false,
-            },
+            info: Default::default(),
             resources: Resources::default(),
             pipeline: CachedPipeline::default(),
             pipeline_build_count: 0,
             in_flight: false,
-        };
-        let devices = unsafe { session.instance.enumerate_physical_devices() }.map_err(driver)?;
-        let mut selected = None;
+        })
+    }
+
+    fn probe_devices(&self) -> Result<Vec<DeviceProbe>, ComputeError> {
+        let devices = unsafe { self.instance.enumerate_physical_devices() }.map_err(driver)?;
+        let mut probes = Vec::new();
         for physical in devices {
-            let properties = unsafe { session.instance.get_physical_device_properties(physical) };
-            if properties.vendor_id != selector.vendor_id
-                || properties.device_id != selector.device_id
-            {
-                continue;
+            let properties = unsafe { self.instance.get_physical_device_properties(physical) };
+            let mut ids = vk::PhysicalDeviceIDProperties::default();
+            let has_ids = properties.api_version >= vk::API_VERSION_1_1;
+            if has_ids {
+                let mut extended = vk::PhysicalDeviceProperties2::default().push_next(&mut ids);
+                unsafe {
+                    self.instance
+                        .get_physical_device_properties2(physical, &mut extended)
+                };
             }
-            if !allowed_type(properties.device_type) {
+            let features = unsafe { self.instance.get_physical_device_features(physical) };
+            let families = unsafe {
+                self.instance
+                    .get_physical_device_queue_family_properties(physical)
+            };
+            let memory = unsafe {
+                self.instance
+                    .get_physical_device_memory_properties(physical)
+            };
+            if memory.memory_type_count > 32 || memory.memory_heap_count > 16 {
                 return Err(invalid(
-                    "selected Vulkan device is not an integrated/discrete GPU; CPU fallback denied",
+                    "driver memory property counts exceed Vulkan arrays",
                 ));
             }
-            if selected.is_some() {
-                return Err(invalid("device selector is ambiguous"));
+            let mut types = Vec::new();
+            for index in 0..memory.memory_type_count {
+                let kind = memory.memory_types[index as usize];
+                if kind.heap_index >= memory.memory_heap_count {
+                    return Err(invalid("driver memory type references missing heap"));
+                }
+                let heap = memory.memory_heaps[kind.heap_index as usize];
+                types.push(VulkanMemoryTypeInfo {
+                    index,
+                    property_flags: kind.property_flags.as_raw(),
+                    heap_index: kind.heap_index,
+                    heap_size: heap.size,
+                    heap_flags: heap.flags.as_raw(),
+                });
             }
-            selected = Some((physical, properties));
+            let limits = properties.limits;
+            let mut report = VulkanDeviceCandidate {
+                vendor_id: properties.vendor_id,
+                device_id: properties.device_id,
+                name: unsafe { CStr::from_ptr(properties.device_name.as_ptr()) }
+                    .to_string_lossy()
+                    .into_owned(),
+                device_type: format!("{:?}", properties.device_type),
+                api_version: properties.api_version,
+                driver_version: properties.driver_version,
+                device_uuid: has_ids.then_some(ids.device_uuid),
+                driver_uuid: has_ids.then_some(ids.driver_uuid),
+                robust_buffer_access: features.robust_buffer_access != 0,
+                queue_families: families
+                    .iter()
+                    .enumerate()
+                    .map(|(i, f)| VulkanQueueFamilyInfo {
+                        index: i as u32,
+                        queue_count: f.queue_count,
+                        flags: f.queue_flags.as_raw(),
+                    })
+                    .collect(),
+                memory_types: types,
+                limits: VulkanComputeLimits {
+                    max_workgroup_count: limits.max_compute_work_group_count,
+                    max_workgroup_size: limits.max_compute_work_group_size,
+                    max_workgroup_invocations: limits.max_compute_work_group_invocations,
+                    max_storage_buffer_range: limits.max_storage_buffer_range,
+                    max_per_stage_storage_buffers: limits.max_per_stage_descriptor_storage_buffers,
+                    max_descriptor_set_storage_buffers: limits.max_descriptor_set_storage_buffers,
+                    max_per_stage_resources: limits.max_per_stage_resources,
+                    max_bound_descriptor_sets: limits.max_bound_descriptor_sets,
+                    max_memory_allocation_count: limits.max_memory_allocation_count,
+                    non_coherent_atom_size: limits.non_coherent_atom_size,
+                },
+                unsupported_reasons: Vec::new(),
+            };
+            report.unsupported_reasons = baseline_rejections(&report, hardware_type);
+            probes.push(DeviceProbe {
+                physical,
+                properties,
+                memory,
+                report,
+            });
         }
-        let (physical, properties) = selected
-            .ok_or_else(|| invalid("exact Vulkan vendor/device not found; fallback denied"))?;
-        if properties.api_version < vk::API_VERSION_1_1 {
-            return Err(invalid("Vulkan 1.1 physical device required"));
+        Ok(probes)
+    }
+
+    #[cfg(all(test, target_os = "linux"))]
+    fn new(selector: VulkanDeviceSelector) -> Result<Self, ComputeError> {
+        Self::new_selected(selector, None, hardware_type)
+    }
+
+    // Private injection permits an explicit software ICD lifecycle test only.
+    #[cfg(all(test, target_os = "linux"))]
+    fn new_matching_type(
+        selector: VulkanDeviceSelector,
+        allowed_type: impl Fn(vk::PhysicalDeviceType) -> bool,
+    ) -> Result<Self, ComputeError> {
+        Self::new_selected(selector, None, |kind| {
+            allowed_type(match kind {
+                "CPU" => vk::PhysicalDeviceType::CPU,
+                "INTEGRATED_GPU" => vk::PhysicalDeviceType::INTEGRATED_GPU,
+                "DISCRETE_GPU" => vk::PhysicalDeviceType::DISCRETE_GPU,
+                _ => vk::PhysicalDeviceType::OTHER,
+            })
+        })
+    }
+
+    fn new_selected(
+        selector: VulkanDeviceSelector,
+        uuid: Option<[u8; 16]>,
+        allowed_type: impl Fn(&str) -> bool,
+    ) -> Result<Self, ComputeError> {
+        let mut session = Self::empty()?;
+        let mut probes = session.probe_devices()?;
+        for probe in &mut probes {
+            probe.report.unsupported_reasons = baseline_rejections(&probe.report, &allowed_type);
         }
-        let features = unsafe { session.instance.get_physical_device_features(physical) };
-        if features.robust_buffer_access == 0 {
-            return Err(invalid("robustBufferAccess is required"));
-        }
-        let families = unsafe {
-            session
-                .instance
-                .get_physical_device_queue_family_properties(physical)
-        };
-        let family = families
-            .iter()
-            .position(|f| f.queue_count > 0 && f.queue_flags.contains(vk::QueueFlags::COMPUTE))
-            .ok_or_else(|| invalid("no compute queue"))? as u32;
+        let reports: Vec<_> = probes.iter().map(|p| p.report.clone()).collect();
+        let index = select_candidate(&reports, selector, uuid)?;
+        let selected = probes.swap_remove(index);
+        let family = compute_family(&selected.report).ok_or_else(|| invalid("no compute queue"))?;
         let priorities = [1.0f32];
         let queues = [vk::DeviceQueueCreateInfo::default()
             .queue_family_index(family)
@@ -552,26 +832,25 @@ impl Session {
         let create = vk::DeviceCreateInfo::default()
             .queue_create_infos(&queues)
             .enabled_features(&enabled);
-        let device =
-            unsafe { session.instance.create_device(physical, &create, None) }.map_err(driver)?;
-        session.queue = unsafe { device.get_device_queue(family, 0) };
-        session.device = Some(device);
-        session.memory = unsafe {
+        let device = unsafe {
             session
                 .instance
-                .get_physical_device_memory_properties(physical)
-        };
-        session.limits = properties.limits;
+                .create_device(selected.physical, &create, None)
+        }
+        .map_err(driver)?;
+        session.queue = unsafe { device.get_device_queue(family, 0) };
+        session.device = Some(device);
+        session.memory = selected.memory;
+        session.limits = selected.properties.limits;
         session.info = VulkanDeviceInfo {
-            vendor_id: properties.vendor_id,
-            device_id: properties.device_id,
-            name: unsafe { CStr::from_ptr(properties.device_name.as_ptr()) }
-                .to_string_lossy()
-                .into_owned(),
-            device_type: format!("{:?}", properties.device_type),
-            api_version: properties.api_version,
+            vendor_id: selected.report.vendor_id,
+            device_id: selected.report.device_id,
+            name: selected.report.name.clone(),
+            device_type: selected.report.device_type.clone(),
+            api_version: selected.report.api_version,
             queue_family: family,
             robust_buffer_access: true,
+            capabilities: selected.report,
         };
         Ok(session)
     }
@@ -598,6 +877,9 @@ impl Session {
                 > self.limits.max_per_stage_descriptor_storage_buffers as usize
             || descriptor.buffer_bindings.len()
                 > self.limits.max_descriptor_set_storage_buffers as usize
+            || descriptor.buffer_bindings.len() > self.limits.max_per_stage_resources as usize
+            || descriptor.buffer_bindings.len() > self.limits.max_memory_allocation_count as usize
+            || self.limits.max_bound_descriptor_sets == 0
             || descriptor
                 .buffer_bindings
                 .iter()
@@ -719,19 +1001,14 @@ impl Session {
                 let buffer = device.create_buffer(&create, None).map_err(driver)?;
                 self.resources
                     .buffers
-                    .push((buffer, vk::DeviceMemory::null()));
+                    .push((buffer, vk::DeviceMemory::null(), false));
                 let requirements = device.get_buffer_memory_requirements(buffer);
-                let memory_type = (0..self.memory.memory_type_count)
-                    .find(|index| {
-                        requirements.memory_type_bits & (1 << index) != 0
-                            && self.memory.memory_types[*index as usize]
-                                .property_flags
-                                .contains(
-                                    vk::MemoryPropertyFlags::HOST_VISIBLE
-                                        | vk::MemoryPropertyFlags::HOST_COHERENT,
-                                )
-                    })
-                    .ok_or_else(|| invalid("host-visible coherent storage memory unavailable"))?;
+                let (memory_type, coherent) = host_memory_type(
+                    &self.memory,
+                    requirements.memory_type_bits,
+                    requirements.size,
+                )?;
+                self.resources.buffers.last_mut().unwrap().2 = coherent;
                 let allocate = vk::MemoryAllocateInfo::default()
                     .allocation_size(requirements.size)
                     .memory_type_index(memory_type);
@@ -741,10 +1018,19 @@ impl Session {
                     .bind_buffer_memory(buffer, memory, 0)
                     .map_err(driver)?;
                 let mapped = device
-                    .map_memory(memory, 0, bytes.len() as u64, vk::MemoryMapFlags::empty())
+                    .map_memory(memory, 0, vk::WHOLE_SIZE, vk::MemoryMapFlags::empty())
                     .map_err(driver)?;
                 std::ptr::copy_nonoverlapping(bytes.as_ptr(), mapped.cast::<u8>(), bytes.len());
+                let flushed = if coherent {
+                    Ok(())
+                } else {
+                    device.flush_mapped_memory_ranges(&[vk::MappedMemoryRange::default()
+                        .memory(memory)
+                        .offset(0)
+                        .size(vk::WHOLE_SIZE)])
+                };
                 device.unmap_memory(memory);
+                flushed.map_err(driver)?;
             }
             let layouts = [self.pipeline.descriptor_layout];
             let pool_sizes = [vk::DescriptorPoolSize {
@@ -771,7 +1057,7 @@ impl Session {
                 .buffers
                 .iter()
                 .zip(views)
-                .map(|((buffer, _), (_, bytes))| {
+                .map(|((buffer, _, _), (_, bytes))| {
                     [vk::DescriptorBufferInfo {
                         buffer: *buffer,
                         offset: 0,
@@ -831,7 +1117,7 @@ impl Session {
                 .resources
                 .buffers
                 .iter()
-                .map(|(buffer, _)| {
+                .map(|(buffer, _, _)| {
                     vk::BufferMemoryBarrier::default()
                         .src_access_mask(vk::AccessFlags::SHADER_WRITE)
                         .dst_access_mask(vk::AccessFlags::HOST_READ)
@@ -842,7 +1128,7 @@ impl Session {
                         .size(vk::WHOLE_SIZE)
                 })
                 .collect();
-            // Queue submission makes coherent host upload available to the GPU;
+            // Queue submission makes coherent/flushed host upload available to the GPU;
             // this barrier makes compute writes available to the host domain.
             device.cmd_pipeline_barrier(
                 command,
@@ -867,11 +1153,22 @@ impl Session {
                 ComputeError::Generic(format!("GPU completion unresolved ({error:?}); backend poisoned; in-flight resources retained")))?;
             self.in_flight = false;
             let mut results = Vec::with_capacity(views.len());
-            for ((_, memory), (_, source)) in self.resources.buffers.iter().zip(views) {
+            for ((_, memory, coherent), (_, source)) in self.resources.buffers.iter().zip(views) {
                 let mut bytes = vec![0u8; source.len()];
                 let mapped = device
-                    .map_memory(*memory, 0, bytes.len() as u64, vk::MemoryMapFlags::empty())
+                    .map_memory(*memory, 0, vk::WHOLE_SIZE, vk::MemoryMapFlags::empty())
                     .map_err(driver)?;
+                if !coherent {
+                    if let Err(error) =
+                        device.invalidate_mapped_memory_ranges(&[vk::MappedMemoryRange::default()
+                            .memory(*memory)
+                            .offset(0)
+                            .size(vk::WHOLE_SIZE)])
+                    {
+                        device.unmap_memory(*memory);
+                        return Err(driver(error));
+                    }
+                }
                 std::ptr::copy_nonoverlapping(mapped.cast::<u8>(), bytes.as_mut_ptr(), bytes.len());
                 device.unmap_memory(*memory);
                 results.push(bytes);
@@ -922,7 +1219,7 @@ impl Session {
             if resources.descriptor_pool != vk::DescriptorPool::null() {
                 device.destroy_descriptor_pool(resources.descriptor_pool, None);
             }
-            for (buffer, memory) in resources.buffers {
+            for (buffer, memory, _) in resources.buffers {
                 device.destroy_buffer(buffer, None);
                 if memory != vk::DeviceMemory::null() {
                     device.free_memory(memory, None);
@@ -958,6 +1255,238 @@ impl Drop for Session {
 mod tests {
     use super::*;
     const SHADER: &[u8] = include_bytes!("../tests/fixtures/storage_transform.spv");
+
+    // Independently authored capability fixtures; these do not emulate hardware
+    // execution or establish support on an untested vendor's physical device.
+    fn candidate(vendor: u32, id: u8) -> VulkanDeviceCandidate {
+        let mut report = VulkanDeviceCandidate {
+            vendor_id: vendor,
+            device_id: 7,
+            name: "capability fixture".into(),
+            device_type: "INTEGRATED_GPU".into(),
+            api_version: vk::API_VERSION_1_1,
+            device_uuid: Some([id; 16]),
+            robust_buffer_access: true,
+            queue_families: vec![
+                VulkanQueueFamilyInfo {
+                    index: 0,
+                    queue_count: 1,
+                    flags: vk::QueueFlags::GRAPHICS.as_raw(),
+                },
+                VulkanQueueFamilyInfo {
+                    index: 2,
+                    queue_count: 0,
+                    flags: vk::QueueFlags::COMPUTE.as_raw(),
+                },
+                VulkanQueueFamilyInfo {
+                    index: 3,
+                    queue_count: 1,
+                    flags: vk::QueueFlags::COMPUTE.as_raw(),
+                },
+            ],
+            memory_types: vec![VulkanMemoryTypeInfo {
+                property_flags: vk::MemoryPropertyFlags::HOST_VISIBLE.as_raw(),
+                heap_size: 4096,
+                ..Default::default()
+            }],
+            limits: VulkanComputeLimits {
+                max_workgroup_count: [8; 3],
+                max_workgroup_size: [32; 3],
+                max_workgroup_invocations: 64,
+                max_storage_buffer_range: 4096,
+                max_per_stage_storage_buffers: 4,
+                max_descriptor_set_storage_buffers: 4,
+                max_per_stage_resources: 4,
+                max_bound_descriptor_sets: 1,
+                max_memory_allocation_count: 8,
+                non_coherent_atom_size: 256,
+            },
+            ..Default::default()
+        };
+        report.unsupported_reasons = baseline_rejections(&report, hardware_type);
+        report
+    }
+
+    #[test]
+    fn uuid_selects_same_model_without_first_device_or_vendor_policy() {
+        for vendor_id in [0x1002, 0x10de, 0x8086, 0xabcd] {
+            let reports = [candidate(vendor_id, 1), candidate(vendor_id, 2)];
+            let selector = VulkanDeviceSelector {
+                vendor_id,
+                device_id: 7,
+            };
+            assert!(select_candidate(&reports, selector, None)
+                .unwrap_err()
+                .to_string()
+                .contains("ambiguous"));
+            assert_eq!(
+                select_candidate(&reports, selector, Some([2; 16])).unwrap(),
+                1
+            );
+            assert_eq!(
+                select_candidate(
+                    &[reports[1].clone(), reports[0].clone()],
+                    selector,
+                    Some([2; 16])
+                )
+                .unwrap(),
+                0
+            );
+            assert!(select_candidate(&reports, selector, Some([3; 16]))
+                .unwrap_err()
+                .to_string()
+                .contains("not found"));
+            assert_eq!(compute_family(&reports[0]), Some(3));
+        }
+    }
+
+    #[test]
+    fn duplicate_uuid_and_wrong_ids_never_choose_a_candidate() {
+        let reports = [candidate(0x8086, 1), candidate(0x8086, 1)];
+        let selector = VulkanDeviceSelector {
+            vendor_id: 0x8086,
+            device_id: 7,
+        };
+        assert!(select_candidate(&reports, selector, Some([1; 16]))
+            .unwrap_err()
+            .to_string()
+            .contains("ambiguous"));
+        assert!(select_candidate(
+            &reports,
+            VulkanDeviceSelector {
+                vendor_id: 0x1002,
+                ..selector
+            },
+            Some([1; 16])
+        )
+        .is_err());
+        assert!(select_candidate(&[], selector, None).is_err());
+    }
+
+    #[test]
+    fn unsupported_diagnostics_report_all_failed_baseline_requirements() {
+        let mut report = candidate(0x10de, 1);
+        report.device_type = "CPU".into();
+        report.api_version = vk::API_VERSION_1_0;
+        report.robust_buffer_access = false;
+        report.queue_families[2].queue_count = 0;
+        report.memory_types[0].property_flags = vk::MemoryPropertyFlags::DEVICE_LOCAL.as_raw();
+        report.limits.max_workgroup_size[1] = 0;
+        report.limits.max_storage_buffer_range = 3;
+        report.limits.non_coherent_atom_size = 0;
+        report.unsupported_reasons = baseline_rejections(&report, hardware_type);
+        assert_eq!(report.unsupported_reasons.len(), 8);
+        let error = select_candidate(
+            &[report],
+            VulkanDeviceSelector {
+                vendor_id: 0x10de,
+                device_id: 7,
+            },
+            None,
+        )
+        .unwrap_err()
+        .to_string();
+        for reason in [
+            "CPU/virtual fallback denied",
+            "Vulkan 1.1",
+            "robustBufferAccess",
+            "compute queue",
+            "HOST_VISIBLE",
+            "workgroup",
+            "storage/descriptor",
+            "nonCoherentAtomSize",
+        ] {
+            assert!(error.contains(reason), "{error}");
+        }
+    }
+
+    #[test]
+    fn virtual_device_remains_unsupported_and_low_capacity_is_explicit() {
+        let mut report = candidate(0x8086, 1);
+        report.device_type = "VIRTUAL_GPU".into();
+        assert_eq!(baseline_rejections(&report, hardware_type).len(), 1);
+        report.device_type = "DISCRETE_GPU".into();
+        report.limits.max_bound_descriptor_sets = 0;
+        assert_eq!(baseline_rejections(&report, hardware_type).len(), 1);
+        report.limits.max_bound_descriptor_sets = 1;
+        report.memory_types[0].heap_size = 3;
+        assert_eq!(baseline_rejections(&report, hardware_type).len(), 1);
+    }
+
+    fn memory_fixture() -> vk::PhysicalDeviceMemoryProperties {
+        let mut memory = vk::PhysicalDeviceMemoryProperties {
+            memory_type_count: 4,
+            memory_heap_count: 2,
+            ..Default::default()
+        };
+        memory.memory_heaps[0].size = 4096;
+        memory.memory_heaps[1].size = 65536;
+        memory.memory_types[0] = vk::MemoryType {
+            property_flags: vk::MemoryPropertyFlags::DEVICE_LOCAL,
+            heap_index: 1,
+        };
+        memory.memory_types[1] = vk::MemoryType {
+            property_flags: vk::MemoryPropertyFlags::HOST_VISIBLE
+                | vk::MemoryPropertyFlags::HOST_CACHED,
+            heap_index: 0,
+        };
+        memory.memory_types[2] = vk::MemoryType {
+            property_flags: vk::MemoryPropertyFlags::HOST_VISIBLE
+                | vk::MemoryPropertyFlags::HOST_COHERENT
+                | vk::MemoryPropertyFlags::DEVICE_LOCAL,
+            heap_index: 1,
+        };
+        memory.memory_types[3] = vk::MemoryType {
+            property_flags: vk::MemoryPropertyFlags::HOST_VISIBLE
+                | vk::MemoryPropertyFlags::HOST_COHERENT
+                | vk::MemoryPropertyFlags::HOST_CACHED,
+            heap_index: 0,
+        };
+        memory
+    }
+
+    #[test]
+    fn host_memory_selection_respects_buffer_bits_coherency_and_shared_heaps() {
+        let memory = memory_fixture();
+        assert_eq!(host_memory_type(&memory, 0b1111, 4096).unwrap(), (3, true));
+        assert_eq!(host_memory_type(&memory, 0b0111, 4096).unwrap(), (2, true));
+        assert_eq!(host_memory_type(&memory, 0b0011, 4096).unwrap(), (1, false));
+        assert!(host_memory_type(&memory, 0b0001, 4).is_err());
+        assert_eq!(host_memory_type(&memory, 0b1111, 4097).unwrap(), (2, true));
+        assert!(host_memory_type(&memory, 0b0011, 4097).is_err());
+        assert!(host_memory_type(&memory, 0, 4).is_err());
+        assert!(host_memory_type(&memory, u32::MAX, u64::MAX).is_err());
+        assert!(host_memory_type(&memory, u32::MAX, 0).is_err());
+    }
+
+    #[test]
+    fn optional_memory_features_are_not_silently_used() {
+        let mut memory = memory_fixture();
+        memory.memory_types[3].property_flags |= vk::MemoryPropertyFlags::DEVICE_COHERENT_AMD;
+        assert_eq!(host_memory_type(&memory, 0b1111, 4).unwrap(), (2, true));
+        assert!(host_memory_type(&memory, 0b1000, 4).is_err());
+        memory.memory_types[2].property_flags |= vk::MemoryPropertyFlags::PROTECTED;
+        assert_eq!(host_memory_type(&memory, 0b1111, 4).unwrap(), (1, false));
+        let mut report = candidate(0x1002, 1);
+        report.memory_types[0].property_flags |=
+            vk::MemoryPropertyFlags::DEVICE_COHERENT_AMD.as_raw();
+        assert_eq!(baseline_rejections(&report, hardware_type).len(), 1);
+    }
+
+    #[test]
+    fn memory_type_index_31_and_malformed_counts_are_checked() {
+        let mut memory = memory_fixture();
+        memory.memory_type_count = 32;
+        memory.memory_types[31] = memory.memory_types[1];
+        assert_eq!(host_memory_type(&memory, 1 << 31, 4).unwrap(), (31, false));
+        memory.memory_types[31].heap_index = 2;
+        assert!(host_memory_type(&memory, 1 << 31, 4).is_err());
+        memory.memory_type_count = 33;
+        assert!(host_memory_type(&memory, u32::MAX, 4).is_err());
+        memory.memory_type_count = 4;
+        memory.memory_heap_count = 17;
+        assert!(host_memory_type(&memory, u32::MAX, 4).is_err());
+    }
 
     /// Explicit CPU Vulkan execution tests API/resource lifetime only. This
     /// entry is Linux-only and ignored by ordinary builds/hardware acceptance.

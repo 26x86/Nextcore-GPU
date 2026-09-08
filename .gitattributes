@@ -1,2 +1,5 @@
 * text=auto
 *.S text eol=lf
+
+# Preserve exact raw cross-platform validation bytes.
+validation/bp28-portable-rx6800xt-20260909/** -text -whitespace

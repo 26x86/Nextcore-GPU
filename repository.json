@@ -7,9 +7,9 @@
   "crate": "nextcore-gpu",
   "description": "Graphics resource contracts, software rendering, and optional ordered host Vulkan compute with bounded native pipeline reuse.",
   "development": {
-    "branch": "codex/arm64e-boot-metal",
+    "branch": "codex/gpu-portable-devices",
     "base_commit": "84b881e8129774acee3e4faf944e833c407711fd",
-    "updated_utc": "2026-09-08T13:15:57.134625+00:00",
+    "updated_utc": "2026-09-08T15:28:00.180655+00:00",
     "dependency_revisions": {},
     "integration": "Git submodule with an immutable gitlink; workspace source patches for local development"
   },
