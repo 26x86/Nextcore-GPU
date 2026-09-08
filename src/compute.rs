@@ -104,6 +104,12 @@ impl ComputePipelineManager {
         self.vulkan.as_ref().map(|backend| backend.device_info())
     }
 
+    /// Successful native compilations; absent for unconfigured/poisoned backends.
+    #[cfg(feature = "vulkan")]
+    pub fn vulkan_pipeline_build_count(&self) -> Option<u64> {
+        self.vulkan.as_ref().and_then(|backend| backend.pipeline_build_count())
+    }
+
     pub fn create_pipeline(&mut self, desc: ComputePipelineDescriptor) -> u32 {
         let id = self.next_id;
         self.next_id += 1;

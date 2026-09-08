@@ -8,8 +8,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 326,
-      "sha256": "4143cd825195f7a38a7f4326d8fc37ee5be5cf3c6cdbbca4d2102ebc09c6edc4"
+      "bytes": 441,
+      "sha256": "5525a29fd6ed6b96a77a09bec83d0f36e5e4d868ce62d0d24d71c34bb9f65c73"
     },
     {
       "path": ".gitignore",
@@ -28,18 +28,23 @@
     },
     {
       "path": "README.md",
-      "bytes": 476,
-      "sha256": "c7e52262876d32f71a70ff5b55f48fd4c37c1842728745472588349e1da43011"
+      "bytes": 4415,
+      "sha256": "92f707a6115841c1758acb83fb4afe1af4ac23d85f50b7f74f8208c3ca30c67e"
     },
     {
       "path": "VULKAN_COMPUTE.md",
-      "bytes": 4232,
-      "sha256": "1fa7294a355f18f0675abf9aceff0f17e33294447d848341dc3075914fcfe2ba"
+      "bytes": 9212,
+      "sha256": "b14fa40e2e66283a575a54fecd80cc9d1cfe056a52f6bafa320da7e90d6a6d5c"
     },
     {
       "path": "examples/vulkan_compute.rs",
-      "bytes": 6470,
-      "sha256": "e8a1bb4315f7eb68d85ba0dfbae2cb56606ea0ed9f20302c1c70fabbe9e3a06b"
+      "bytes": 12274,
+      "sha256": "6b4841fb7b7c0b24b28f14d23dcd42c83e47a114c201c1acb209189eebe033a8"
+    },
+    {
+      "path": "repository.json",
+      "bytes": 3811,
+      "sha256": "447c31ee0d9da13c3e96ba4089b48cf613ab0602f77f774606c342758dc1e6a8"
     },
     {
       "path": "src/adapters/amd.rs",
@@ -68,13 +73,13 @@
     },
     {
       "path": "src/command_executor.rs",
-      "bytes": 19407,
-      "sha256": "75473f55d01205e1e17af3bfef033d1b928daea31cfcf55eed3d933517fdde9d"
+      "bytes": 21954,
+      "sha256": "b64707b65269b193c3351b340ec6974f3692793e7e69e60492bed32a05628aca"
     },
     {
       "path": "src/compute.rs",
-      "bytes": 8841,
-      "sha256": "5d1ca8497888bde04731abe04eca810bfec44ae1a3f960436ed7f7d288577423"
+      "bytes": 9105,
+      "sha256": "663e075d7d081e211e62e02121eb6d8e6de4c45f58b56b04b8342f1ee0f7548e"
     },
     {
       "path": "src/framebuffer.rs",
@@ -118,8 +123,8 @@
     },
     {
       "path": "src/vulkan_compute.rs",
-      "bytes": 36416,
-      "sha256": "1e9d19e1ab1b0dfe461bc0fb407e64a442c24c7e61c1b913ad0e0f3bac64b139"
+      "bytes": 42580,
+      "sha256": "7bae88b23dfb8f07751e323fb5bc2620335415afeed633236373e328c064aab7"
     },
     {
       "path": "tests/fixtures/storage_transform.comp",
@@ -138,8 +143,13 @@
     },
     {
       "path": "tests/gpu_executor.rs",
-      "bytes": 6533,
-      "sha256": "e47c933ebc18197b8b9ba3e0baa747da455e69314c5627d53a4ff2393cb4a177"
+      "bytes": 6647,
+      "sha256": "3b31195df807de63d445e11b80e6e7a216d6077e905e4f8751a2141d5816271c"
+    },
+    {
+      "path": "tests/gpu_executor_compute.rs",
+      "bytes": 6227,
+      "sha256": "6598d74d133268f8a13db43468dc9e358b501cababcaf2ff8d79526a876b44b6"
     },
     {
       "path": "tests/gpu_framebuffer.rs",
@@ -175,6 +185,31 @@
       "path": "tests/gpu_virtual.rs",
       "bytes": 4334,
       "sha256": "602a3aac41c6d71b7fc692fcc633261ed7f9bb2f73449a9de74c73bb0c6cefb5"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/README.md",
+      "bytes": 3429,
+      "sha256": "a774060d86ddec4b853a68c846769148522b2d7238387ed2dce6db6610d8d73a"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/cargo-lock.toml",
+      "bytes": 4228,
+      "sha256": "1b4bed7873a71123aab046f78c7938f04a92f62b5567bf1ae9d8e266f100696d"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/cross-build.log",
+      "bytes": 792,
+      "sha256": "18a3282792e6601be4bcb9e5ffaa33991b5562b6681b5018a56b9c455ef14988"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/hardware-example.json",
+      "bytes": 9698,
+      "sha256": "70747a4f9b0be97646b3960c6607e4463c8fd415926730b42d66a5f488430a53"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/receipt.json",
+      "bytes": 6789,
+      "sha256": "5a4a7c7933ffe157a2ee8f55d40bbb07a1fe0b177f1b7ddbd00cf8ba8ae1302a"
     }
   ]
 }

@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 use thiserror::Error;
 
+use crate::compute::{ComputeError, ComputePipelineManager, DispatchWorkgroup};
 use crate::framebuffer::{FramebufferError, LinearFramebuffer};
+use crate::sync::GpuSyncManager;
 use crate::rasterizer::{Color, RasterError, SoftwareRasterizer, Vec2, Vec3, Vec4, Vertex};
 use crate::texture::{TextureError, TextureManager};
 
@@ -57,6 +59,10 @@ fn read_index(data: &[u8], offset: usize, index_type: IndexType) -> u32 {
 
 #[derive(Debug, Error)]
 pub enum ExecutorError {
+    #[error("compute error: {0}")]
+    Compute(#[from] ComputeError),
+    #[error("compute dispatch cannot run inside an active render pass")]
+    ComputeInsideRenderPass,
     #[error("framebuffer error: {0}")]
     Framebuffer(#[from] FramebufferError),
     #[error("texture error: {0}")]
@@ -264,7 +270,7 @@ impl CommandExecutor {
         framebuffers: &mut [LinearFramebuffer],
         textures: &mut TextureManager,
     ) -> Result<(), ExecutorError> {
-        self.execute_inner(commands, framebuffers, textures, None)
+        self.execute_inner(commands, framebuffers, textures, None, None)
     }
 
     /// `execute`와 같지만 BoundState의 vertex/index buffer에서 정점을 해석해
@@ -277,7 +283,34 @@ impl CommandExecutor {
         textures: &mut TextureManager,
         rasterizer: &mut SoftwareRasterizer,
     ) -> Result<(), ExecutorError> {
-        self.execute_inner(commands, framebuffers, textures, Some(rasterizer))
+        self.execute_inner(commands, framebuffers, textures, Some(rasterizer), None)
+    }
+
+    /// Execute recorded compute work using pipelines and storage buffers owned by
+    /// the supplied manager. Each dispatch completes readback before the next
+    /// command begins. Previously completed commands are not rolled back on error.
+    /// An unconfigured manager returns ComputeError::BackendUnavailable.
+    pub fn execute_with_compute(
+        &mut self,
+        commands: &RecordedCommandBuffer,
+        framebuffers: &mut [LinearFramebuffer],
+        textures: &mut TextureManager,
+        compute: &mut ComputePipelineManager,
+    ) -> Result<(), ExecutorError> {
+        self.execute_inner(commands, framebuffers, textures, None, Some(compute))
+    }
+
+    /// Combine software rasterization with explicit host compute. Render passes
+    /// and compute dispatches must be separated by EndRenderPass.
+    pub fn execute_with_backends(
+        &mut self,
+        commands: &RecordedCommandBuffer,
+        framebuffers: &mut [LinearFramebuffer],
+        textures: &mut TextureManager,
+        rasterizer: &mut SoftwareRasterizer,
+        compute: &mut ComputePipelineManager,
+    ) -> Result<(), ExecutorError> {
+        self.execute_inner(commands, framebuffers, textures, Some(rasterizer), Some(compute))
     }
 
     fn execute_inner(
@@ -286,6 +319,7 @@ impl CommandExecutor {
         framebuffers: &mut [LinearFramebuffer],
         textures: &mut TextureManager,
         mut rasterizer: Option<&mut SoftwareRasterizer>,
+        mut compute: Option<&mut ComputePipelineManager>,
     ) -> Result<(), ExecutorError> {
         for cmd in &commands.commands {
             match cmd {
@@ -467,7 +501,24 @@ impl CommandExecutor {
                 }
                 GpuCommand::GenerateMipmaps(_) => {}
                 GpuCommand::DispatchCompute { pipeline_id, x, y, z } => {
-                    log::debug!("compute dispatch pipeline {} ({},{},{})", pipeline_id, x, y, z);
+                    if self.active_pass.is_some() {
+                        return Err(ExecutorError::ComputeInsideRenderPass);
+                    }
+                    let manager = compute.as_deref_mut().ok_or(ComputeError::BackendUnavailable)?;
+                    // The backend dispatch is synchronous. Keep only one temporary
+                    // host fence; a timed-out Vulkan submission remains owned by
+                    // the manager's poisoned backend, never by this fence state.
+                    let mut sync = GpuSyncManager::new();
+                    let fence = sync.create_fence();
+                    manager.dispatch(
+                        *pipeline_id,
+                        DispatchWorkgroup { x: *x, y: *y, z: *z },
+                        &sync,
+                        fence,
+                    )?;
+                    if !sync.get_fence(fence).is_some_and(|fence| fence.is_signaled()) {
+                        return Err(ComputeError::Generic("compute returned before completion".into()).into());
+                    }
                     self.executed_commands += 1;
                 }
             }

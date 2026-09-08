@@ -1,10 +1,12 @@
 //! Actual host GPU acceptance through ComputePipelineManager; never guest Metal.
 use nextcore_gpu::{
+    command_executor::{CommandExecutor, ExecutorError, GpuCommand, RecordedCommandBuffer},
     compute::{
         BufferBinding, ComputePipelineDescriptor, ComputePipelineManager, ComputeShader,
         DispatchWorkgroup,
     },
     sync::GpuSyncManager,
+    texture::TextureManager,
     vulkan_compute::{VulkanComputeConfig, VulkanDeviceSelector},
 };
 use std::{error::Error, path::PathBuf, time::Duration};
@@ -146,9 +148,152 @@ fn run() -> Result<(), Box<dyn Error>> {
         }
         rejected.push(serde_json::json!({"kind": kind, "error": error.to_string(), "fence_unsignaled": true, "host_buffer_unchanged": true}));
     }
+    // Exercise the recorded command path, including the dependency between two
+    // dispatches. The second upload must contain the first GPU's readback.
+    let mut executor = CommandExecutor::new();
+    let mut textures = TextureManager::new();
+    let inputs: Vec<u32> = (0..256u32).map(|i| (i * 37 + 11) ^ 0xaa55).collect();
+    let bytes: Vec<u8> = inputs.iter().flat_map(|v| v.to_le_bytes()).collect();
+    manager.write_storage_buffer(buffer, 16, &bytes)?;
+    let command = GpuCommand::DispatchCompute {
+        pipeline_id: pipeline,
+        x: 4,
+        y: 1,
+        z: 1,
+    };
+    executor.execute_with_compute(
+        &RecordedCommandBuffer {
+            commands: vec![command.clone(), command],
+        },
+        &mut [],
+        &mut textures,
+        &mut manager,
+    )?;
+    let actual: Vec<u32> = manager
+        .read_storage_buffer(buffer, 16, 1024)?
+        .chunks_exact(4)
+        .map(|v| u32::from_le_bytes(v.try_into().unwrap()))
+        .collect();
+    let expected: Vec<u32> = inputs
+        .iter()
+        .map(|v| {
+            v.wrapping_mul(3)
+                .wrapping_add(7)
+                .wrapping_mul(3)
+                .wrapping_add(7)
+        })
+        .collect();
+    if actual != expected || executor.executed_command_count() != 2 {
+        return Err("recorded dispatch dependency/readback/count mismatch".into());
+    }
+    if manager.read_storage_buffer(buffer, 0, 16)? != [0xa5; 16]
+        || manager.read_storage_buffer(buffer, 1040, 16)? != [0x5a; 16]
+    {
+        return Err("recorded dispatch changed offset guards".into());
+    }
+    let before = manager.read_storage_buffer(buffer, 0, 1056)?;
+    let error = executor
+        .execute_with_compute(
+            &RecordedCommandBuffer {
+                commands: vec![
+                    GpuCommand::DispatchCompute {
+                        pipeline_id: u32::MAX,
+                        x: 4,
+                        y: 1,
+                        z: 1,
+                    },
+                    GpuCommand::DispatchCompute {
+                        pipeline_id: pipeline,
+                        x: 4,
+                        y: 1,
+                        z: 1,
+                    },
+                ],
+            },
+            &mut [],
+            &mut textures,
+            &mut manager,
+        )
+        .err()
+        .ok_or("recorded invalid pipeline was accepted")?;
+    if !matches!(
+        error,
+        ExecutorError::Compute(nextcore_gpu::compute::ComputeError::PipelineNotFound(
+            u32::MAX
+        ))
+    ) || manager.read_storage_buffer(buffer, 0, 1056)? != before
+        || executor.executed_command_count() != 2
+    {
+        return Err("recorded command failure was not propagated or did not stop the list".into());
+    }
+    if manager.vulkan_pipeline_build_count() != Some(1) {
+        return Err("same-shader recorded work recompiled the native pipeline".into());
+    }
+    // Change only an authored shader constant, retaining the public shader ID.
+    // A cache keyed by the caller's ID would incorrectly execute the old shader.
+    let mut changed = template.clone();
+    let code = &mut changed.shader.bytecode;
+    let mut at = 20;
+    let mut changes = 0;
+    while at < code.len() {
+        let instruction = u32::from_le_bytes(code[at..at + 4].try_into().unwrap());
+        if instruction & 0xffff == 43
+            && instruction >> 16 == 4
+            && u32::from_le_bytes(code[at + 12..at + 16].try_into().unwrap()) == 7
+        {
+            code[at + 12..at + 16].copy_from_slice(&9u32.to_le_bytes());
+            changes += 1;
+        }
+        at += (instruction >> 16) as usize * 4;
+    }
+    if changes != 1 {
+        return Err("authored fixture no longer has one additive constant".into());
+    }
+    let changed_pipeline = manager.create_pipeline(changed);
+    for (pipeline_id, addend, compilations) in
+        [(changed_pipeline, 9u32, 2u64), (pipeline, 7u32, 3u64)]
+    {
+        manager.write_storage_buffer(buffer, 16, &bytes)?;
+        executor.execute_with_compute(
+            &RecordedCommandBuffer {
+                commands: vec![GpuCommand::DispatchCompute {
+                    pipeline_id,
+                    x: 4,
+                    y: 1,
+                    z: 1,
+                }],
+            },
+            &mut [],
+            &mut textures,
+            &mut manager,
+        )?;
+        let readback: Vec<u32> = manager
+            .read_storage_buffer(buffer, 16, 1024)?
+            .chunks_exact(4)
+            .map(|v| u32::from_le_bytes(v.try_into().unwrap()))
+            .collect();
+        let wanted: Vec<u32> = inputs
+            .iter()
+            .map(|v| v.wrapping_mul(3).wrapping_add(addend))
+            .collect();
+        if readback != wanted || manager.vulkan_pipeline_build_count() != Some(compilations) {
+            return Err(
+                "native shader cache replacement reused stale code or compiled incorrectly".into(),
+            );
+        }
+    }
+    if manager.read_storage_buffer(buffer, 0, 16)? != [0xa5; 16]
+        || manager.read_storage_buffer(buffer, 1040, 16)? != [0x5a; 16]
+    {
+        return Err("replacement shader changed guards".into());
+    }
+    let recorded = serde_json::json!({"ordered_dispatches": 2, "input": inputs, "readback": actual,
+        "all_256_matched": true, "guards_unchanged": true, "failure_stopped_remaining_work": true,
+        "completed_dispatch_count": executor.executed_command_count(), "cache_replacement_dispatches": 2, "same_shader_reused": true,
+        "same_id_different_shader_recompiled": true, "native_pipeline_compilations": manager.vulkan_pipeline_build_count()});
     println!(
         "{}",
-        serde_json::json!({"device": device, "runs": runs, "rejected_dispatches": rejected, "host_vulkan_compute_verified": true,
+        serde_json::json!({"device": device, "runs": runs, "recorded_commands": recorded, "rejected_dispatches": rejected, "host_vulkan_compute_verified": true,
         "cpu_fallback": false, "guest_metal_verified": false, "macos_boot_verified": false})
     );
     Ok(())
