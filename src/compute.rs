@@ -211,6 +211,11 @@ impl ComputePipelineManager {
         Err(ComputeError::BackendUnavailable)
     }
 
+    /// Byte size for checked guest-handle registration; exposes no host pointer.
+    pub fn storage_buffer_size(&self, handle: u64) -> Option<usize> {
+        self.storage_buffers.get(&handle).map(|buffer| buffer.data.len())
+    }
+
     pub fn storage_buffer_count(&self) -> usize {
         self.storage_buffers.len()
     }

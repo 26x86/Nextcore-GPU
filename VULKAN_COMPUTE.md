@@ -149,3 +149,22 @@ still needs physical GPU command submission and a guest Metal driver/transport
 implementation. The separate ISE/EFI GOP path performs framebuffer scanout and
 readback; it does not establish Metal acceleration. Standalone build instructions
 and preserved release provenance are in [README.md](README.md).
+
+
+## Existing SGPU wire adapter
+
+`SgpuComputeSession` accepts the existing count-prefixed SGPU command payload,
+shared with APLS through `sgpu_command`. Host setup registers bounded resource and
+kernel handle mappings; no guest shader format or transport opcode was added.
+Checked snapshot windows preserve u64 handles on 32/64-bit callers. Copy and
+compute commands are preflighted together, unsupported render/present commands
+are rejected, and backend failures report the completed prefix. Compute uses
+`CommandExecutor::execute_with_compute`, including its real completion/readback.
+
+The hardware acceptance example now also authors and submits an 87-byte SGPU
+list at an unaligned snapshot offset. On the RX 6800 XT, its two added GPU
+dispatches matched 256 final values, reused the existing pipeline cache, and
+passed bounds/lifetime/rejection checks. The complete example executed eight
+GPU dispatches. [The receipt](validation/sgpu-wire-rx6800xt-20260908/receipt.json)
+and [contract](SGPU_COMPUTE.md) distinguish this host-side wire validation from
+an actual guest driver or EFI Metal backend, both still unverified.

@@ -57,6 +57,15 @@ instructions. No driver replacement or reboot was needed.
 See [VULKAN_COMPUTE.md](VULKAN_COMPUTE.md) for the supported shader/buffer contract,
 recorded command API, hardware acceptance example, and failure semantics.
 
+The [SGPU submission adapter](SGPU_COMPUTE.md) now shares APLS's existing LE
+command codec, rejects malformed counts and ranges before allocation, and maps
+explicitly registered resources/kernels into the same compute executor.
+[Physical wire-path validation](validation/sgpu-wire-rx6800xt-20260908/README.md)
+passed on the RX 6800 XT: one buffer copy, two GPU dispatches, 256 checked final
+values, guards, rejection and resource-lifetime checks. Current suites pass 109
+GPU default tests, 112 GPU Vulkan tests (one ignored), and 48 APLS tests. Actual
+guest driver submission and EFI GPU command submission remain unverified.
+
 ## Current limits
 
 - The default compute manager has no execution backend. Public Vulkan construction

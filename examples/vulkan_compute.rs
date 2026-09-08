@@ -5,6 +5,7 @@ use nextcore_gpu::{
         BufferBinding, ComputePipelineDescriptor, ComputePipelineManager, ComputeShader,
         DispatchWorkgroup,
     },
+    sgpu_compute::{SgpuComputeError, SgpuComputeSession},
     sync::GpuSyncManager,
     texture::TextureManager,
     vulkan_compute::{VulkanComputeConfig, VulkanDeviceSelector},
@@ -291,12 +292,123 @@ fn run() -> Result<(), Box<dyn Error>> {
         "all_256_matched": true, "guards_unchanged": true, "failure_stopped_remaining_work": true,
         "completed_dispatch_count": executor.executed_command_count(), "cache_replacement_dispatches": 2, "same_shader_reused": true,
         "same_id_different_shader_recompiled": true, "native_pipeline_compilations": manager.vulkan_pipeline_build_count()});
+    let sgpu_wire = exercise_sgpu_wire(manager, pipeline, buffer)?;
     println!(
         "{}",
-        serde_json::json!({"device": device, "runs": runs, "recorded_commands": recorded, "rejected_dispatches": rejected, "host_vulkan_compute_verified": true,
+        serde_json::json!({"device": device, "runs": runs, "recorded_commands": recorded, "sgpu_wire": sgpu_wire, "rejected_dispatches": rejected, "host_vulkan_compute_verified": true,
         "cpu_fallback": false, "guest_metal_verified": false, "macos_boot_verified": false})
     );
     Ok(())
+}
+
+// Author the existing SGPU payload independently of its encoder, exercising
+// unaligned copy-in, full-width guest handles, ordered dispatch, and readback.
+fn exercise_sgpu_wire(
+    mut manager: ComputePipelineManager,
+    pipeline: u32,
+    destination: u64,
+) -> Result<serde_json::Value, Box<dyn Error>> {
+    const SOURCE: u64 = 0x1234_5678_0000_0001;
+    const DESTINATION: u64 = 0xfedc_ba98_0000_0002;
+    const KERNEL: u32 = 0xf100_0001;
+    let source = manager.create_storage_buffer(1056);
+    let mut session = SgpuComputeSession::new(manager);
+    session.register_resource(SOURCE, source)?;
+    session.register_resource(DESTINATION, destination)?;
+    session.register_kernel(KERNEL, pipeline)?;
+    let input: Vec<u32> = (0..256).map(|i| (i * 123 + 71) ^ 0xff00).collect();
+    let mut upload = vec![0x3c; 16];
+    upload.extend(input.iter().flat_map(|value| value.to_le_bytes()));
+    upload.extend([0xc3; 16]);
+    session.write_resource(SOURCE, 0, &upload)?;
+    let mut copy_record = vec![1];
+    for value in [SOURCE, DESTINATION, 1056] {
+        copy_record.extend_from_slice(&value.to_le_bytes());
+    }
+    let mut payload = 3u32.to_le_bytes().to_vec();
+    payload.extend_from_slice(&copy_record);
+    for _ in 0..2 {
+        payload.push(3);
+        for value in [KERNEL, 4, 1, 1, 64, 1, 1] {
+            payload.extend_from_slice(&value.to_le_bytes());
+        }
+    }
+    let mut snapshot = vec![0x99];
+    snapshot.extend_from_slice(&payload);
+    snapshot.push(0x55);
+    if session.submit_wire(&snapshot, 1, payload.len() as u64)? != 3 {
+        return Err("SGPU completion count differs".into());
+    }
+    let bytes = session.read_resource(DESTINATION, 16, 1024)?;
+    let readback: Vec<u32> = bytes
+        .chunks_exact(4)
+        .map(|word| u32::from_le_bytes(word.try_into().unwrap()))
+        .collect();
+    let expected: Vec<u32> = input
+        .iter()
+        .map(|value| {
+            value
+                .wrapping_mul(3)
+                .wrapping_add(7)
+                .wrapping_mul(3)
+                .wrapping_add(7)
+        })
+        .collect();
+    if readback != expected
+        || session.read_resource(DESTINATION, 0, 16)? != [0x3c; 16]
+        || session.read_resource(DESTINATION, 1040, 16)? != [0xc3; 16]
+    {
+        return Err("SGPU wire dispatch readback or guard mismatch".into());
+    }
+    let before = session.read_resource(DESTINATION, 0, 1056)?;
+    let mut unmapped = snapshot.clone();
+    let kernel_offset = 1 + 4 + copy_record.len() + 1;
+    unmapped[kernel_offset..kernel_offset + 4].copy_from_slice(&u32::MAX.to_le_bytes());
+    let bad = session
+        .submit_wire(&unmapped, 1, payload.len() as u64)
+        .unwrap_err();
+    if bad.completed != 0 || !matches!(bad.error, SgpuComputeError::KernelNotFound(u32::MAX)) {
+        return Err("SGPU unmapped kernel was not preflighted".into());
+    }
+    let mut unsupported = 2u32.to_le_bytes().to_vec();
+    unsupported.extend_from_slice(&copy_record);
+    unsupported.push(4);
+    unsupported.extend_from_slice(&DESTINATION.to_le_bytes());
+    let bad = session
+        .submit_wire(&unsupported, 0, unsupported.len() as u64)
+        .unwrap_err();
+    if bad.completed != 0 || !matches!(bad.error, SgpuComputeError::UnsupportedCommand(4)) {
+        return Err("SGPU present was not rejected before the preceding copy".into());
+    }
+    if session
+        .submit_wire(&snapshot, 1, payload.len() as u64 + 1)
+        .is_ok()
+        || session.read_resource(DESTINATION, 0, 1056)? != before
+        || session.completed_command_count() != 3
+        || session.manager().vulkan_pipeline_build_count() != Some(3)
+    {
+        return Err("SGPU failed submission changed completion, data or native cache".into());
+    }
+    if !matches!(
+        session.unregister_resource(DESTINATION),
+        Err(SgpuComputeError::ResourceInUse(DESTINATION))
+    ) {
+        return Err("SGPU revoked a kernel-bound resource".into());
+    }
+    session.unregister_kernel(KERNEL)?;
+    session.unregister_resource(DESTINATION)?;
+    if session.read_resource(DESTINATION, 0, 1).is_ok() {
+        return Err("SGPU revoked handle remained accessible".into());
+    }
+    Ok(
+        serde_json::json!({"wire_payload": payload, "input": input, "readback": readback,
+        "all_256_matched": true, "guards_unchanged": true, "unaligned_snapshot_offset": 1,
+        "completed_commands": 3, "compute_dispatches": 2, "software_buffer_copies": 1,
+        "unmapped_kernel_rejected": true, "unsupported_present_rejected": true,
+        "trailing_bytes_rejected": true, "rejected_lists_preserved_readback": true,
+        "resource_lifetime_checked": true, "native_pipeline_compilations": 3,
+        "guest_metal_verified": false, "efi_gpu_command_backend_verified": false}),
+    )
 }
 
 fn main() {
