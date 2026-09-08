@@ -153,12 +153,15 @@ fn test_draw_instanced() {
 fn test_reset_stats() {
     let mut ex = CommandExecutor::new();
     let mut fbs = vec![LinearFramebuffer::new(4, 4, PixelFormat::Rgba8)];
-    let _ = fbs.pop();
 
     let cmdbuf = RecordedCommandBuffer {
-        commands: vec![GpuCommand::DispatchCompute { pipeline_id: 1, x: 1, y: 1, z: 1 }],
+        commands: vec![
+            GpuCommand::BeginRenderPass { clear_color: [0.0; 4], clear_depth: 1.0 },
+            GpuCommand::Draw { vertex_count: 3, first_vertex: 0 },
+            GpuCommand::EndRenderPass,
+        ],
     };
-    ex.execute(&cmdbuf, &mut [], &mut nextcore_gpu::texture::TextureManager::new()).unwrap();
+    ex.execute(&cmdbuf, &mut fbs, &mut nextcore_gpu::texture::TextureManager::new()).unwrap();
     assert_eq!(ex.executed_command_count(), 1);
     ex.reset_stats();
     assert_eq!(ex.executed_command_count(), 0);

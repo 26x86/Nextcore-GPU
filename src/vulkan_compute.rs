@@ -94,6 +94,13 @@ impl VulkanComputeBackend {
         &self.info
     }
 
+    /// Number of successful native pipeline compilations in this live session.
+    pub fn pipeline_build_count(&self) -> Option<u64> {
+        self.session
+            .as_ref()
+            .map(|session| session.pipeline_build_count)
+    }
+
     pub(crate) fn dispatch(
         &mut self,
         descriptor: &ComputePipelineDescriptor,
@@ -408,13 +415,37 @@ fn validate_module(validator: &Path, bytes: &[u8]) -> Result<(), ComputeError> {
 #[derive(Default)]
 struct Resources {
     buffers: Vec<(vk::Buffer, vk::DeviceMemory)>,
+    descriptor_pool: vk::DescriptorPool,
+    command_pool: vk::CommandPool,
+    fence: vk::Fence,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct PipelineKey {
+    words: Vec<u32>,
+    entry: String,
+    bindings: Vec<u32>,
+}
+
+impl PipelineKey {
+    fn matches(&self, words: &[u32], entry: &str, views: &[(u32, Vec<u8>)]) -> bool {
+        self.words == words
+            && self.entry == entry
+            && self
+                .bindings
+                .iter()
+                .copied()
+                .eq(views.iter().map(|(binding, _)| *binding))
+    }
+}
+
+#[derive(Default)]
+struct CachedPipeline {
+    key: Option<PipelineKey>,
     shader: vk::ShaderModule,
     descriptor_layout: vk::DescriptorSetLayout,
     pipeline_layout: vk::PipelineLayout,
     pipeline: vk::Pipeline,
-    descriptor_pool: vk::DescriptorPool,
-    command_pool: vk::CommandPool,
-    fence: vk::Fence,
 }
 
 struct Session {
@@ -426,11 +457,27 @@ struct Session {
     queue: vk::Queue,
     info: VulkanDeviceInfo,
     resources: Resources,
+    pipeline: CachedPipeline,
+    pipeline_build_count: u64,
     in_flight: bool,
 }
 
 impl Session {
     fn new(selector: VulkanDeviceSelector) -> Result<Self, ComputeError> {
+        Self::new_matching_type(selector, |kind| {
+            matches!(
+                kind,
+                vk::PhysicalDeviceType::INTEGRATED_GPU | vk::PhysicalDeviceType::DISCRETE_GPU
+            )
+        })
+    }
+
+    // The public constructor always passes the hardware-only predicate above.
+    // Module-private injection permits an explicit software ICD lifecycle test.
+    fn new_matching_type(
+        selector: VulkanDeviceSelector,
+        allowed_type: impl Fn(vk::PhysicalDeviceType) -> bool,
+    ) -> Result<Self, ComputeError> {
         // SAFETY: runtime Vulkan loader is explicitly supplied by the host.
         let entry = unsafe { Entry::load() }.map_err(|e| invalid(format!("Vulkan loader: {e}")))?;
         let app_name = c"Nextcore host compute";
@@ -456,6 +503,8 @@ impl Session {
                 robust_buffer_access: false,
             },
             resources: Resources::default(),
+            pipeline: CachedPipeline::default(),
+            pipeline_build_count: 0,
             in_flight: false,
         };
         let devices = unsafe { session.instance.enumerate_physical_devices() }.map_err(driver)?;
@@ -467,10 +516,7 @@ impl Session {
             {
                 continue;
             }
-            if !matches!(
-                properties.device_type,
-                vk::PhysicalDeviceType::INTEGRATED_GPU | vk::PhysicalDeviceType::DISCRETE_GPU
-            ) {
+            if !allowed_type(properties.device_type) {
                 return Err(invalid(
                     "selected Vulkan device is not an integrated/discrete GPU; CPU fallback denied",
                 ));
@@ -578,6 +624,80 @@ impl Session {
         result
     }
 
+    fn prepare_pipeline(
+        &mut self,
+        words: &[u32],
+        entry_name: &str,
+        views: &[(u32, Vec<u8>)],
+    ) -> Result<(), ComputeError> {
+        if self
+            .pipeline
+            .key
+            .as_ref()
+            .is_some_and(|key| key.matches(words, entry_name, views))
+        {
+            return Ok(());
+        }
+        // execute() cleaned all completed command buffers/descriptors first.
+        // A poisoned session never enters this function again.
+        self.cleanup_pipeline();
+        let device = self.device.as_ref().unwrap();
+        unsafe {
+            let bindings: Vec<_> = views
+                .iter()
+                .map(|(binding, _)| {
+                    vk::DescriptorSetLayoutBinding::default()
+                        .binding(*binding)
+                        .descriptor_type(vk::DescriptorType::STORAGE_BUFFER)
+                        .descriptor_count(1)
+                        .stage_flags(vk::ShaderStageFlags::COMPUTE)
+                })
+                .collect();
+            self.pipeline.descriptor_layout = device
+                .create_descriptor_set_layout(
+                    &vk::DescriptorSetLayoutCreateInfo::default().bindings(&bindings),
+                    None,
+                )
+                .map_err(driver)?;
+            let layouts = [self.pipeline.descriptor_layout];
+            self.pipeline.pipeline_layout = device
+                .create_pipeline_layout(
+                    &vk::PipelineLayoutCreateInfo::default().set_layouts(&layouts),
+                    None,
+                )
+                .map_err(driver)?;
+            self.pipeline.shader = device
+                .create_shader_module(&vk::ShaderModuleCreateInfo::default().code(words), None)
+                .map_err(driver)?;
+            let entry = CString::new(entry_name).map_err(|_| invalid("entry contains NUL"))?;
+            let stage = vk::PipelineShaderStageCreateInfo::default()
+                .stage(vk::ShaderStageFlags::COMPUTE)
+                .module(self.pipeline.shader)
+                .name(&entry);
+            let pipeline = vk::ComputePipelineCreateInfo::default()
+                .stage(stage)
+                .layout(self.pipeline.pipeline_layout);
+            match device.create_compute_pipelines(vk::PipelineCache::null(), &[pipeline], None) {
+                Ok(pipelines) => self.pipeline.pipeline = pipelines[0],
+                Err((pipelines, error)) => {
+                    for pipeline in pipelines {
+                        if pipeline != vk::Pipeline::null() {
+                            device.destroy_pipeline(pipeline, None);
+                        }
+                    }
+                    return Err(driver(error));
+                }
+            }
+        }
+        self.pipeline.key = Some(PipelineKey {
+            words: words.to_vec(),
+            entry: entry_name.into(),
+            bindings: views.iter().map(|(binding, _)| *binding).collect(),
+        });
+        self.pipeline_build_count += 1;
+        Ok(())
+    }
+
     fn execute_inner(
         &mut self,
         words: &[u32],
@@ -586,6 +706,7 @@ impl Session {
         views: &[(u32, Vec<u8>)],
         timeout: Duration,
     ) -> Result<Vec<Vec<u8>>, ComputeError> {
+        self.prepare_pipeline(words, entry_name, views)?;
         let device = self.device.as_ref().unwrap();
         // SAFETY throughout: objects share this device, commands are externally
         // synchronized by &mut self, bounds/profile were checked before entry.
@@ -625,51 +746,7 @@ impl Session {
                 std::ptr::copy_nonoverlapping(bytes.as_ptr(), mapped.cast::<u8>(), bytes.len());
                 device.unmap_memory(memory);
             }
-            let bindings: Vec<_> = views
-                .iter()
-                .map(|(binding, _)| {
-                    vk::DescriptorSetLayoutBinding::default()
-                        .binding(*binding)
-                        .descriptor_type(vk::DescriptorType::STORAGE_BUFFER)
-                        .descriptor_count(1)
-                        .stage_flags(vk::ShaderStageFlags::COMPUTE)
-                })
-                .collect();
-            self.resources.descriptor_layout = device
-                .create_descriptor_set_layout(
-                    &vk::DescriptorSetLayoutCreateInfo::default().bindings(&bindings),
-                    None,
-                )
-                .map_err(driver)?;
-            let layouts = [self.resources.descriptor_layout];
-            self.resources.pipeline_layout = device
-                .create_pipeline_layout(
-                    &vk::PipelineLayoutCreateInfo::default().set_layouts(&layouts),
-                    None,
-                )
-                .map_err(driver)?;
-            self.resources.shader = device
-                .create_shader_module(&vk::ShaderModuleCreateInfo::default().code(words), None)
-                .map_err(driver)?;
-            let entry = CString::new(entry_name).map_err(|_| invalid("entry contains NUL"))?;
-            let stage = vk::PipelineShaderStageCreateInfo::default()
-                .stage(vk::ShaderStageFlags::COMPUTE)
-                .module(self.resources.shader)
-                .name(&entry);
-            let pipeline = vk::ComputePipelineCreateInfo::default()
-                .stage(stage)
-                .layout(self.resources.pipeline_layout);
-            match device.create_compute_pipelines(vk::PipelineCache::null(), &[pipeline], None) {
-                Ok(pipelines) => self.resources.pipeline = pipelines[0],
-                Err((pipelines, error)) => {
-                    for pipeline in pipelines {
-                        if pipeline != vk::Pipeline::null() {
-                            device.destroy_pipeline(pipeline, None);
-                        }
-                    }
-                    return Err(driver(error));
-                }
-            }
+            let layouts = [self.pipeline.descriptor_layout];
             let pool_sizes = [vk::DescriptorPoolSize {
                 ty: vk::DescriptorType::STORAGE_BUFFER,
                 descriptor_count: views.len() as u32,
@@ -739,12 +816,12 @@ impl Session {
             device.cmd_bind_pipeline(
                 command,
                 vk::PipelineBindPoint::COMPUTE,
-                self.resources.pipeline,
+                self.pipeline.pipeline,
             );
             device.cmd_bind_descriptor_sets(
                 command,
                 vk::PipelineBindPoint::COMPUTE,
-                self.resources.pipeline_layout,
+                self.pipeline.pipeline_layout,
                 0,
                 &[descriptor],
                 &[],
@@ -803,6 +880,30 @@ impl Session {
         }
     }
 
+    fn cleanup_pipeline(&mut self) {
+        if self.in_flight {
+            return;
+        }
+        let Some(device) = &self.device else {
+            return;
+        };
+        let pipeline = std::mem::take(&mut self.pipeline);
+        unsafe {
+            if pipeline.pipeline != vk::Pipeline::null() {
+                device.destroy_pipeline(pipeline.pipeline, None);
+            }
+            if pipeline.pipeline_layout != vk::PipelineLayout::null() {
+                device.destroy_pipeline_layout(pipeline.pipeline_layout, None);
+            }
+            if pipeline.descriptor_layout != vk::DescriptorSetLayout::null() {
+                device.destroy_descriptor_set_layout(pipeline.descriptor_layout, None);
+            }
+            if pipeline.shader != vk::ShaderModule::null() {
+                device.destroy_shader_module(pipeline.shader, None);
+            }
+        }
+    }
+
     fn cleanup(&mut self) {
         if self.in_flight {
             return;
@@ -820,18 +921,6 @@ impl Session {
             }
             if resources.descriptor_pool != vk::DescriptorPool::null() {
                 device.destroy_descriptor_pool(resources.descriptor_pool, None);
-            }
-            if resources.pipeline != vk::Pipeline::null() {
-                device.destroy_pipeline(resources.pipeline, None);
-            }
-            if resources.pipeline_layout != vk::PipelineLayout::null() {
-                device.destroy_pipeline_layout(resources.pipeline_layout, None);
-            }
-            if resources.descriptor_layout != vk::DescriptorSetLayout::null() {
-                device.destroy_descriptor_set_layout(resources.descriptor_layout, None);
-            }
-            if resources.shader != vk::ShaderModule::null() {
-                device.destroy_shader_module(resources.shader, None);
             }
             for (buffer, memory) in resources.buffers {
                 device.destroy_buffer(buffer, None);
@@ -855,6 +944,7 @@ impl Drop for Session {
             return;
         }
         self.cleanup();
+        self.cleanup_pipeline();
         unsafe {
             if let Some(device) = &self.device {
                 device.destroy_device(None);
@@ -868,6 +958,88 @@ impl Drop for Session {
 mod tests {
     use super::*;
     const SHADER: &[u8] = include_bytes!("../tests/fixtures/storage_transform.spv");
+
+    /// Explicit CPU Vulkan execution tests API/resource lifetime only. This
+    /// entry is Linux-only and ignored by ordinary builds/hardware acceptance.
+    #[cfg(target_os = "linux")]
+    #[test]
+    #[ignore = "requires Mesa llvmpipe Vulkan ICD and /usr/bin/spirv-val"]
+    fn software_vulkan_pipeline_reuse_and_replacement() {
+        let selector = VulkanDeviceSelector {
+            vendor_id: 0x10005,
+            device_id: 0,
+        };
+        let session =
+            Session::new_matching_type(selector, |kind| kind == vk::PhysicalDeviceType::CPU)
+                .unwrap();
+        assert_eq!(session.info.device_type, "CPU");
+        let mut backend = VulkanComputeBackend {
+            config: VulkanComputeConfig {
+                selector,
+                spirv_validator: PathBuf::from("/usr/bin/spirv-val"),
+                fence_timeout: Duration::from_secs(3),
+            },
+            info: session.info.clone(),
+            session: Some(session),
+        };
+        let mut changed = SHADER.to_vec();
+        let mut at = 20;
+        let mut modifications = 0;
+        while at < changed.len() {
+            let instruction = u32::from_le_bytes(changed[at..at + 4].try_into().unwrap());
+            if instruction & 0xffff == 43
+                && instruction >> 16 == 4
+                && u32::from_le_bytes(changed[at + 12..at + 16].try_into().unwrap()) == 7
+            {
+                changed[at + 12..at + 16].copy_from_slice(&9u32.to_le_bytes());
+                modifications += 1;
+            }
+            at += (instruction >> 16) as usize * 4;
+        }
+        assert_eq!(modifications, 1);
+        let mut inputs: Vec<u32> = (0..256).map(|i| i * 17 + 5).collect();
+        for (shader, addend, compilations) in [
+            (SHADER, 7u32, 1u64),
+            (SHADER, 7, 1),
+            (changed.as_slice(), 9, 2),
+            (changed.as_slice(), 9, 2),
+            (SHADER, 7, 3),
+        ] {
+            let descriptor = ComputePipelineDescriptor {
+                shader: crate::compute::ComputeShader {
+                    id: 1,
+                    entry_point: "main".into(),
+                    bytecode: shader.to_vec(),
+                },
+                workgroup_size: [64, 1, 1],
+                buffer_bindings: vec![crate::compute::BufferBinding {
+                    binding: 0,
+                    buffer_id: 1,
+                    offset: 0,
+                    size: 1024,
+                }],
+            };
+            let uploaded: Vec<u8> = inputs.iter().flat_map(|v| v.to_le_bytes()).collect();
+            let outputs = backend
+                .dispatch(&descriptor, [4, 1, 1], &[(0, uploaded)])
+                .unwrap();
+            let actual: Vec<u32> = outputs[0]
+                .chunks_exact(4)
+                .map(|v| u32::from_le_bytes(v.try_into().unwrap()))
+                .collect();
+            let expected: Vec<u32> = inputs
+                .iter()
+                .map(|v| v.wrapping_mul(3).wrapping_add(addend))
+                .collect();
+            assert_eq!(actual, expected);
+            assert_ne!(actual, inputs);
+            assert_eq!(backend.pipeline_build_count(), Some(compilations));
+            inputs = actual;
+        }
+        // Normal production selection still rejects this exact CPU device.
+        assert!(Session::new(selector).is_err());
+        std::println!("{{\"software_vulkan_dispatches\":5,\"values_verified\":1280,\"native_pipeline_compilations\":3,\"hardware_verified\":false,\"metal_verified\":false}}");
+    }
 
     #[test]
     fn authored_fixture_profile() {
