@@ -145,13 +145,13 @@ fn render_path_double_buffer_presents() {
             .unwrap();
     }
 
-    // swap 전에는 back에만 삼각형이 있고 front는 새 버퍼(투명)
+    // Before swap, triangle only exists in back buffer; front is new buffer (transparent)
     assert_eq!(db.front().get_pixel(8, 10).unwrap(), [0, 0, 0, 0]);
     assert_eq!(db.back().get_pixel(8, 10).unwrap(), [255, 0, 0, 255]);
 
     db.swap();
 
-    // swap 후에는 front(표시면)에 삼각형
+    // After swap, triangle is on the front (display) buffer
     assert_eq!(db.front().get_pixel(8, 10).unwrap(), [255, 0, 0, 255]);
     assert_eq!(db.front().get_pixel(1, 1).unwrap(), [0, 0, 0, 255]);
 }

@@ -7,7 +7,7 @@ use crate::sync::GpuSyncManager;
 use crate::rasterizer::{Color, RasterError, SoftwareRasterizer, Vec2, Vec3, Vec4, Vertex};
 use crate::texture::{TextureError, TextureManager};
 
-/// 소프트웨어 폴백 정점 한 개의 인터리브 레이아웃 크기(바이트):
+/// Size of the interleaved layout of a single software fallback vertex in bytes:
 /// position Vec4(16) + color Color(16) + tex_coord Vec2(8) + normal Vec3(12).
 pub const SOFTWARE_RENDER_VERTEX_STRIDE: u32 = 52;
 
@@ -16,7 +16,7 @@ fn f32_at(data: &[u8], offset: usize) -> Option<f32> {
     Some(f32::from_le_bytes(bytes))
 }
 
-/// `SOFTWARE_RENDER_VERTEX_STRIDE` 레이아웃으로 인코딩된 정점을 offset에서 해석한다.
+/// Decodes a vertex encoded in `SOFTWARE_RENDER_VERTEX_STRIDE` layout at the specified offset.
 pub fn decode_software_vertex(data: &[u8], offset: usize) -> Option<Vertex> {
     let position = Vec4::new(
         f32_at(data, offset)?,
@@ -273,9 +273,9 @@ impl CommandExecutor {
         self.execute_inner(commands, framebuffers, textures, None, None)
     }
 
-    /// `execute`와 같지만 BoundState의 vertex/index buffer에서 정점을 해석해
-    /// SoftwareRasterizer로 실제 삼각형 래스터화까지 수행한다. depth buffer는
-    /// render pass 시작 시 프레임버퍼 크기로 재할당·초기화된다.
+    /// Same as `execute`, but decodes vertices from the BoundState vertex/index buffer
+    /// and performs actual triangle rasterization using SoftwareRasterizer. The depth buffer
+    /// is reallocated and initialized to framebuffer dimensions at render pass begin.
     pub fn execute_with_rasterizer(
         &mut self,
         commands: &RecordedCommandBuffer,
