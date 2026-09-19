@@ -362,4 +362,3 @@ fn metal_track_m6_d10_gates_evaluator_absent_guest() {
     assert!(probe.asserts_honest_fail_without_device());
     assert!(!VirtualMetalDevice::new(GpuCapabilities::default_amd()).supports_metal());
 }
-
