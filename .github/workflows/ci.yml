@@ -12,6 +12,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test --all-targets
+      - name: Metal track honesty and ADP display-path freeze (M0/M1)
+        run: cargo test --no-default-features --features metal_track --test metal_acceptance_contract
       - name: Optional Vulkan backend and command dispatch
         run: cargo test --all-targets --features vulkan
   windows-vulkan-unit:
