@@ -7,7 +7,7 @@ use crate::sync::GpuSyncManager;
 use crate::rasterizer::{Color, RasterError, SoftwareRasterizer, Vec2, Vec3, Vec4, Vertex};
 use crate::texture::{TextureError, TextureManager};
 
-/// Size of the interleaved layout of a single software fallback vertex in bytes:
+/// Interleaved byte stride of one software fallback vertex:
 /// position Vec4(16) + color Color(16) + tex_coord Vec2(8) + normal Vec3(12).
 pub const SOFTWARE_RENDER_VERTEX_STRIDE: u32 = 52;
 
@@ -16,7 +16,7 @@ fn f32_at(data: &[u8], offset: usize) -> Option<f32> {
     Some(f32::from_le_bytes(bytes))
 }
 
-/// Decodes a vertex encoded in `SOFTWARE_RENDER_VERTEX_STRIDE` layout at the specified offset.
+/// Decode a vertex at offset using the `SOFTWARE_RENDER_VERTEX_STRIDE` layout.
 pub fn decode_software_vertex(data: &[u8], offset: usize) -> Option<Vertex> {
     let position = Vec4::new(
         f32_at(data, offset)?,
@@ -273,9 +273,9 @@ impl CommandExecutor {
         self.execute_inner(commands, framebuffers, textures, None, None)
     }
 
-    /// Same as `execute`, but decodes vertices from the BoundState vertex/index buffer
-    /// and performs actual triangle rasterization using SoftwareRasterizer. The depth buffer
-    /// is reallocated and initialized to framebuffer dimensions at render pass begin.
+    /// Execute commands and rasterize vertices from the bound vertex/index buffers.
+    /// The software rasterizer resizes and clears its depth buffer to match the
+    /// framebuffer at the start of the render pass.
     pub fn execute_with_rasterizer(
         &mut self,
         commands: &RecordedCommandBuffer,
