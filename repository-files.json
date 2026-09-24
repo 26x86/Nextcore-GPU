@@ -1,0 +1,355 @@
+{
+  "schema": "26x86.repository-files/1",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 28,
+      "sha256": "4b0f1fc438f30f25abe421b7542e9f3803b8b5c15ca3695614222e2bc547a9fe"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 270,
+      "sha256": "c244cac65a52427ecdfc3ef2f0d8865a50d7ec6b08de84580ae3be74a3229439"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 20,
+      "sha256": "9cc2c8cc102e0b2a0a177c8f594abc9b9776300a04473c24b45d52c1007a4119"
+    },
+    {
+      "path": "Cargo.toml",
+      "bytes": 780,
+      "sha256": "55e53667e349c4b7f57ca52884193435099cb8f88f2e758021c8cb067fd3027d"
+    },
+    {
+      "path": "DISPLAY_PATH_FREEZE.md",
+      "bytes": 655,
+      "sha256": "bc7118e15e6d89c9a0a9a6459dcf83d70788dcf920ffdd7de51a168d0f35dc1a"
+    },
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1851,
+      "sha256": "77c458ccb6116400cf960f8951630bc3b8b34731b56ffbd736b95c2b78449104"
+    },
+    {
+      "path": "PORTABLE_VULKAN_DEVICES.md",
+      "bytes": 4262,
+      "sha256": "f5e7a24781cca4ce1320bcb3c15860d679e674969aee41b8ed3a1b00b871e4ca"
+    },
+    {
+      "path": "README.md",
+      "bytes": 317,
+      "sha256": "11a676269e2ff02aefdf4783696b1eacc1dbf0eef54b74fd81737c0addb22a9f"
+    },
+    {
+      "path": "SGPU_COMPUTE.md",
+      "bytes": 4886,
+      "sha256": "2c2988a7b640a431b638a8f57a46fbe45200b6ae2b97044a1a097b6d4c451e5a"
+    },
+    {
+      "path": "VULKAN_COMPUTE.md",
+      "bytes": 12894,
+      "sha256": "3e9370ac1d111169ba9853f4d3f28ff12ff2f19af1d8d80e456aca431ffbe609"
+    },
+    {
+      "path": "examples/vulkan_compute.rs",
+      "bytes": 18007,
+      "sha256": "57d45f255d9cec1ed296b51e8a2e8d8a84d8b5f018050bd548210ef14523e90c"
+    },
+    {
+      "path": "src/adapters/amd.rs",
+      "bytes": 1679,
+      "sha256": "0e085bbc44d9f51611670faaeb6bdd5cfdf3edcadafbd762ad37117a753e8ae4"
+    },
+    {
+      "path": "src/adapters/intel.rs",
+      "bytes": 1690,
+      "sha256": "998a99655f12ccff9e4185e90cfce48835178a573174556dcd52a22ec5f48baa"
+    },
+    {
+      "path": "src/adapters/mod.rs",
+      "bytes": 570,
+      "sha256": "3d51a1f6457a3f7605f1801862ea52e909e56502f1e1706418f13fe5b5a8c0a9"
+    },
+    {
+      "path": "src/adapters/nvidia.rs",
+      "bytes": 1699,
+      "sha256": "035240dec781798c3a893ead6466556a3cea30eadaac5254a6a158afa8cefa79"
+    },
+    {
+      "path": "src/canonical_spec.rs",
+      "bytes": 2573,
+      "sha256": "17f733f2ceaa5bd46b8bbebff2d8f625356efd709f1b5371da3b73a706ee2a42"
+    },
+    {
+      "path": "src/command_executor.rs",
+      "bytes": 21847,
+      "sha256": "b4af17fbebd0fe074d7cfe1884bcdd5c67591ce34edfd757d5b6e1e63c21eff1"
+    },
+    {
+      "path": "src/compute.rs",
+      "bytes": 9778,
+      "sha256": "8db36902f2adb89fd1b33c47a53901643832eeb8508a55b61aa90c410bd80b4e"
+    },
+    {
+      "path": "src/display_path_freeze.rs",
+      "bytes": 2980,
+      "sha256": "c67a790aea0666b9e6045455e823e1680b3101c1fc19c834ad9d1cbc848e917e"
+    },
+    {
+      "path": "src/framebuffer.rs",
+      "bytes": 9834,
+      "sha256": "6d3b9da8fbe80e1142e5f09b928fc14ec52f8a76c350a0b5c706765e5a346bf2"
+    },
+    {
+      "path": "src/lib.rs",
+      "bytes": 1211,
+      "sha256": "86c39dff154ab3b1deb4127b2447f895ce9ac363b466446e8d17d5e38a7a8c13"
+    },
+    {
+      "path": "src/metal_accel_probe.rs",
+      "bytes": 13728,
+      "sha256": "9db58cfc169956f7d7a39be8f91ee39fdcec932f75fb994015471020e9fbb12c"
+    },
+    {
+      "path": "src/metal_acceptance.rs",
+      "bytes": 3955,
+      "sha256": "b0a96f9527ff459b683e312d9d1bb5583cec8d53bcbe41030fd39dad3c045afe"
+    },
+    {
+      "path": "src/metal_d10_gates.rs",
+      "bytes": 15768,
+      "sha256": "99d3b05b3ecc78420f84afe5b0ac718c0d69ef49cfb14a419053bc25c0829149"
+    },
+    {
+      "path": "src/metal_guest_probe.rs",
+      "bytes": 14573,
+      "sha256": "742b1e2465369fe944b158d680512c71a865619f86bf30131929e2fd3f637c2e"
+    },
+    {
+      "path": "src/metal_public_abi.rs",
+      "bytes": 9633,
+      "sha256": "22512b2bd3516bd595db85d7fb8173cd87b0890ee3c456b083c3c8c91354f181"
+    },
+    {
+      "path": "src/metal_transport.rs",
+      "bytes": 23696,
+      "sha256": "7c9b934363a376e01663848b427c82b4ddd70edb079444364ee4c6bd5382be0e"
+    },
+    {
+      "path": "src/rasterizer.rs",
+      "bytes": 11570,
+      "sha256": "c66d209b4626c2a68e93afd420d0a275394bed8e332118ff3ba32230d98f73a1"
+    },
+    {
+      "path": "src/render_pipeline.rs",
+      "bytes": 7317,
+      "sha256": "50a20112907528c1003a6d28889283facb5605bb1a980d6b08750e02faa7abb4"
+    },
+    {
+      "path": "src/sgpu_command.rs",
+      "bytes": 6748,
+      "sha256": "2a2473b2bbea3f902b36e53ff5f838cbdd12f6e37cb9ae3e9f117aacaef3495b"
+    },
+    {
+      "path": "src/sgpu_compute.rs",
+      "bytes": 12438,
+      "sha256": "95dff51691327ff11c9ae2d9480cab8067b70c96db8bce61d94068da4047ce53"
+    },
+    {
+      "path": "src/sync.rs",
+      "bytes": 6713,
+      "sha256": "2ff4c32027e5bab4a6d20bfd3367d4a7d546a1e64c194cc2b5af01f775720810"
+    },
+    {
+      "path": "src/texture.rs",
+      "bytes": 8430,
+      "sha256": "e39f3339bb9acd2e12ada48a4e898bec0698648bd42e9c2e2b0a856a97f4de0d"
+    },
+    {
+      "path": "src/translator.rs",
+      "bytes": 2151,
+      "sha256": "6a3a76bbabcc78da251dfaefcac8d71f666928c190d2e40f0d672d8e512507a4"
+    },
+    {
+      "path": "src/virtual_device.rs",
+      "bytes": 5714,
+      "sha256": "c9aa64d55a752672598e7c67e66692167a39236f41bddcd8d53d0f0fe26ead18"
+    },
+    {
+      "path": "src/vulkan_compute.rs",
+      "bytes": 64212,
+      "sha256": "a68a9a577eba5b87ab0fd41d0ff5847e53b2bee4d2769737caee097a20c1d8a2"
+    },
+    {
+      "path": "tests/fixtures/storage_transform.comp",
+      "bytes": 381,
+      "sha256": "6c65b3d938f82cf69c4eb9809fd735e51016dec51188c778345f35f94bebf3bd"
+    },
+    {
+      "path": "tests/fixtures/storage_transform.spv",
+      "bytes": 1068,
+      "sha256": "12f8af8025b5d81f51bbe32d5a09911772b7990e46ef59c844b4dd82e27268ba"
+    },
+    {
+      "path": "tests/gpu_compute.rs",
+      "bytes": 5689,
+      "sha256": "1625d4314750b003cf043bdd2e2021549c7724b44f4ffa299ecc9313caf4f7bc"
+    },
+    {
+      "path": "tests/gpu_executor.rs",
+      "bytes": 6647,
+      "sha256": "3b31195df807de63d445e11b80e6e7a216d6077e905e4f8751a2141d5816271c"
+    },
+    {
+      "path": "tests/gpu_executor_compute.rs",
+      "bytes": 6227,
+      "sha256": "6598d74d133268f8a13db43468dc9e358b501cababcaf2ff8d79526a876b44b6"
+    },
+    {
+      "path": "tests/gpu_framebuffer.rs",
+      "bytes": 3521,
+      "sha256": "286b34e1a9630467d3f28656136fc5e38207ffcae363bdec2b1ee37f9b356344"
+    },
+    {
+      "path": "tests/gpu_pipeline.rs",
+      "bytes": 4647,
+      "sha256": "37bf7922503db4a20e9e5e46f970430f54eea47b5dcbd2602f0a2e6917494c47"
+    },
+    {
+      "path": "tests/gpu_raster.rs",
+      "bytes": 4336,
+      "sha256": "97a90586b561f2ea65516ab7e3edb60b0f0aafb8d5bf22c67acc807bf38ef05a"
+    },
+    {
+      "path": "tests/gpu_render_path.rs",
+      "bytes": 6799,
+      "sha256": "05ac22d5cf3c5db4c5e01c1bc67507d3c861ec96e40ccf82f0e2d38fe1b3883f"
+    },
+    {
+      "path": "tests/gpu_sync.rs",
+      "bytes": 3108,
+      "sha256": "de573f17ac839db7e7b19852eae0b3a2dfe49fab8c01751bed9c6f871e2041a3"
+    },
+    {
+      "path": "tests/gpu_texture.rs",
+      "bytes": 4443,
+      "sha256": "ff875e2243897e5db2cecb9d11735623708e4009b5ab5a704c9e83097a03e540"
+    },
+    {
+      "path": "tests/gpu_virtual.rs",
+      "bytes": 4334,
+      "sha256": "602a3aac41c6d71b7fc692fcc633261ed7f9bb2f73449a9de74c73bb0c6cefb5"
+    },
+    {
+      "path": "tests/metal_acceptance_contract.rs",
+      "bytes": 17036,
+      "sha256": "fee6456becb4d38ba8a935cff715f06a34997848c647c9b508a3b04bce23f7d8"
+    },
+    {
+      "path": "tests/sgpu_submission.rs",
+      "bytes": 11145,
+      "sha256": "5b99707640c204d8f4c97f61d08c810332fbea11909a2695dc8af2a33d24bc88"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/README.md",
+      "bytes": 2525,
+      "sha256": "0a6ad11be592adc1568cf65727fd40f4388b11c5c7ae482b36f6d07d8f09497a"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/cargo-lock.toml",
+      "bytes": 4228,
+      "sha256": "1b4bed7873a71123aab046f78c7938f04a92f62b5567bf1ae9d8e266f100696d"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/devices.json",
+      "bytes": 4126,
+      "sha256": "106ecfb679f152cb7562b6a969344a01afc45be24772ea94bfd816b54601eda1"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/devices.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/legacy.json",
+      "bytes": 16069,
+      "sha256": "c1a408c892d9f84cfb92a306b1f9e4fcfd575672c3c50a484c2c972be67cbaa1"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/legacy.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/receipt.json",
+      "bytes": 10278,
+      "sha256": "a4c68a4c6dd0548131777dfc49e5cafd1a6ed1e8abaed3b7e0aac8e3da827d11"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/uuid.json",
+      "bytes": 16069,
+      "sha256": "c1a408c892d9f84cfb92a306b1f9e4fcfd575672c3c50a484c2c972be67cbaa1"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/uuid.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-devices.json",
+      "bytes": 171,
+      "sha256": "9d2b44803c12158fff02f61df6312f4c27cd4f662fdbc3de75a4c0c992464c51"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-unit-tests.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stderr.txt",
+      "bytes": 162,
+      "sha256": "37cbba9b821faad4d969d8a805f81d07d544dd006bd77ce5d1e9c3552eb326bb"
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/sgpu-wire-rx6800xt-20260908/README.md",
+      "bytes": 3017,
+      "sha256": "000fd1e98a42cb5e441537644d57717fae4f782a88ebd78d3b7b27ccda38e9f4"
+    },
+    {
+      "path": "validation/sgpu-wire-rx6800xt-20260908/hardware-example.json",
+      "bytes": 13700,
+      "sha256": "375eb6cb1ef4ae3fc83cd236f8f0f6f278bdf032bb6c278c0d5cd10f48b71ca6"
+    },
+    {
+      "path": "validation/sgpu-wire-rx6800xt-20260908/receipt.json",
+      "bytes": 6605,
+      "sha256": "81b90a437f831c3e8092e17382f16c6e3b6115c227bc58e35daf3ccf2086f268"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/README.md",
+      "bytes": 3429,
+      "sha256": "a774060d86ddec4b853a68c846769148522b2d7238387ed2dce6db6610d8d73a"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/cargo-lock.toml",
+      "bytes": 4228,
+      "sha256": "1b4bed7873a71123aab046f78c7938f04a92f62b5567bf1ae9d8e266f100696d"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/hardware-example.json",
+      "bytes": 9698,
+      "sha256": "70747a4f9b0be97646b3960c6607e4463c8fd415926730b42d66a5f488430a53"
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/receipt.json",
+      "bytes": 6789,
+      "sha256": "5a4a7c7933ffe157a2ee8f55d40bbb07a1fe0b177f1b7ddbd00cf8ba8ae1302a"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[package]
+name = "nextcore-gpu"
+version = "1.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+log = "0.4"
+thiserror = { version = "2", default-features = false }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+ash = { version = "0.38", optional = true }
+
+[features]
+default = []
+vulkan = ["dep:ash"]
+# Metal Driver Track M0–M6: honesty/acceptance, display-path freeze, public ABI,
+# transport sketch (buffer/copy shapes), non-Metal host accel probe, guest Metal
+# probe harness (executed + structured fail reasons), D10 transcript evaluator.
+# Does not invent guest Metal; metal_verified only on live GuestLive + D10
+# evidence. See docs/research/METAL_DRIVER_TRACK.md.
+metal_track = []
+
+[[example]]
+name = "vulkan_compute"
+required-features = ["vulkan"]
