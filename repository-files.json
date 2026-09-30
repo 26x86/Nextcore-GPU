@@ -39,8 +39,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6703,
-      "sha256": "6552b1566de30b4b23cb7ed1dc5d4b84452dde0b4be9bc9a8425e64221c9365e"
+      "bytes": 6713,
+      "sha256": "a52e2e57c09faffea9488fad3f13a2120402efba34479cb32814a3ce5ff1b7fb"
     },
     {
       "path": "SGPU_COMPUTE.md",

@@ -3,7 +3,7 @@
 `nextcore-gpu` provides graphics resource contracts, a software rasterizer, and an
 optional host Vulkan compute backend. This module is developed in its own
 repository and included by the [26x86 integration repository](https://github.com/26x86/26x86)
-as a Git submodule. It has no sibling NextCore crate dependencies.
+as a tracked source snapshot. It has no sibling NextCore crate dependencies.
 
 Recorded compute commands now execute through an explicitly supplied
 `ComputePipelineManager`: each submission waits for Vulkan completion and commits
