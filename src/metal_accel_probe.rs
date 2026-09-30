@@ -166,7 +166,9 @@ fn soft_detect_host_accel_inner() -> HostAccelPresence {
 fn soft_detect_vulkan_devices() -> HostAccelPresence {
     // Soft probe: load the host Vulkan entry and enumerate physical devices.
     // Errors become honest absence — never invent Metal success.
-    match ash::Entry::load() {
+    // SAFETY: use the platform Vulkan loader and retain it until the probe's
+    // instance is destroyed; no Vulkan handles or function pointers escape.
+    match unsafe { ash::Entry::load() } {
         Err(e) => HostAccelPresence::VulkanUnavailable {
             reason: format!("vulkan entry load failed: {e}"),
         },

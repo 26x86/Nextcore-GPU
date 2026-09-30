@@ -1,6 +1,6 @@
 {
   "schema": "26x86.repository-files/2",
-  "source_revision": "65909c23d2c62001c293a6c8a2f4ff024004100c",
+  "source_revision": "eccda6849e8ddc19d9c1b68a7f47381312201d58",
   "files": [
     {
       "path": ".gitattributes",
@@ -60,7 +60,7 @@
     {
       "path": "repository.json",
       "bytes": 1633,
-      "sha256": "98f7c025f2dd01597e694ca5f0253bcd073f967b359b38a57fed44919c033186"
+      "sha256": "9d046e7a51a75d05380f0683e35fcb4b5df3d40ab5a6a9184cf65c526878eaf5"
     },
     {
       "path": "src/adapters/amd.rs",
@@ -114,8 +114,8 @@
     },
     {
       "path": "src/metal_accel_probe.rs",
-      "bytes": 13728,
-      "sha256": "9db58cfc169956f7d7a39be8f91ee39fdcec932f75fb994015471020e9fbb12c"
+      "bytes": 13894,
+      "sha256": "177dc83cbbcb667533373266384740e225ff4f39b8d7d546372d955a3c49b29f"
     },
     {
       "path": "src/metal_acceptance.rs",

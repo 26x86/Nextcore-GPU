@@ -26,7 +26,7 @@
   },
   "publication": {
     "snapshot": "engineering-preview-20260930",
-    "source_revision": "65909c23d2c62001c293a6c8a2f4ff024004100c",
+    "source_revision": "eccda6849e8ddc19d9c1b68a7f47381312201d58",
     "source_path": "nextcore/crates/nextcore-gpu",
     "previous_public_revision": "fd7d99f2e8e613f6082590edb8f88d4546a6319f",
     "method": "Immutable reviewed Git blobs applied to existing public history",
