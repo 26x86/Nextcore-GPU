@@ -3,7 +3,7 @@
 `nextcore-gpu` provides graphics resource contracts, a software rasterizer, and an
 optional host Vulkan compute backend. This module is developed in its own
 repository and included by the [26x86 integration repository](https://github.com/26x86/26x86)
-as a Git submodule. It has no sibling NextCore crate dependencies.
+as a tracked source snapshot. It has no sibling NextCore crate dependencies.
 
 Recorded compute commands now execute through an explicitly supplied
 `ComputePipelineManager`: each submission waits for Vulkan completion and commits
@@ -111,3 +111,9 @@ integrated hardware and a real noncoherent allocation remain unverified, as do
 physical EFI GPU submission and guest macOS Metal. See
 [the implementation contract](PORTABLE_VULKAN_DEVICES.md) and
 [Vulkan usage](VULKAN_COMPUTE.md).
+
+## September 30 engineering snapshot
+
+Current Status: This module is synchronized from one reviewed immutable integration snapshot. Its source revision and exact dependency pins are recorded in `repository.json`; file sizes and SHA-256 digests are recorded in `repository-files.json`. Existing repository history and license notices are preserved.
+
+Target State: Independently reproducible source and module validation. Module tests establish the stated component behavior. macOS 27 boot and usable installed operation, guest Metal, physical installation and device qualification remain unverified.

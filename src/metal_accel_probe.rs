@@ -7,7 +7,7 @@
 //! devices.
 //!
 //! This module never claims guest Metal, never sets `metal_verified`, and does
-//! not register a guest Metal device. Guest Metal remains unverified.
+//! not register a guest Metal device. See `docs/research/METAL_DRIVER_TRACK.md`.
 
 use serde::{Deserialize, Serialize};
 

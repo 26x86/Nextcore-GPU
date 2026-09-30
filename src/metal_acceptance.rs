@@ -5,7 +5,7 @@
 //! those gates are met. It never synthesizes success from host Vulkan,
 //! framebuffer scanout, PCI capability metadata, or feature flags.
 //!
-//! Guest Metal remains unverified.
+//! See `docs/research/METAL_DRIVER_TRACK.md`.
 
 use serde::{Deserialize, Serialize};
 

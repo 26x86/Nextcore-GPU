@@ -1,5 +1,6 @@
 {
-  "schema": "26x86.repository-files/1",
+  "schema": "26x86.repository-files/2",
+  "source_revision": "eccda6849e8ddc19d9c1b68a7f47381312201d58",
   "files": [
     {
       "path": ".gitattributes",
@@ -8,8 +9,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 666,
-      "sha256": "36536203890435b1fe51cf0c4b9f4cd2c4d5df565ac4da56953491ee5a7c6b6a"
+      "bytes": 838,
+      "sha256": "15c93b7de88db9b2375d5ede651a84c7abefca68f89210d51982cf3e5da5366c"
     },
     {
       "path": ".gitignore",
@@ -18,8 +19,13 @@
     },
     {
       "path": "Cargo.toml",
-      "bytes": 391,
-      "sha256": "6be8b077072d65ae277d551c38ec54b65c2db64b0fe3c4930570166198efea3b"
+      "bytes": 780,
+      "sha256": "55e53667e349c4b7f57ca52884193435099cb8f88f2e758021c8cb067fd3027d"
+    },
+    {
+      "path": "DISPLAY_PATH_FREEZE.md",
+      "bytes": 655,
+      "sha256": "bc7118e15e6d89c9a0a9a6459dcf83d70788dcf920ffdd7de51a168d0f35dc1a"
     },
     {
       "path": "LICENSE.txt",
@@ -33,8 +39,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6103,
-      "sha256": "00e78990c1da6ef03687f1a2b7c8782c1e8cc96ef8072d6acf1496a45e7eceb6"
+      "bytes": 6713,
+      "sha256": "a52e2e57c09faffea9488fad3f13a2120402efba34479cb32814a3ce5ff1b7fb"
     },
     {
       "path": "SGPU_COMPUTE.md",
@@ -53,8 +59,8 @@
     },
     {
       "path": "repository.json",
-      "bytes": 1395,
-      "sha256": "a03b91623956eb41c08346363508f45bab47347c95d992ace6e4f17084711cb1"
+      "bytes": 1633,
+      "sha256": "9d046e7a51a75d05380f0683e35fcb4b5df3d40ab5a6a9184cf65c526878eaf5"
     },
     {
       "path": "src/adapters/amd.rs",
@@ -83,13 +89,18 @@
     },
     {
       "path": "src/command_executor.rs",
-      "bytes": 21954,
-      "sha256": "b64707b65269b193c3351b340ec6974f3692793e7e69e60492bed32a05628aca"
+      "bytes": 21847,
+      "sha256": "b4af17fbebd0fe074d7cfe1884bcdd5c67591ce34edfd757d5b6e1e63c21eff1"
     },
     {
       "path": "src/compute.rs",
       "bytes": 9778,
       "sha256": "8db36902f2adb89fd1b33c47a53901643832eeb8508a55b61aa90c410bd80b4e"
+    },
+    {
+      "path": "src/display_path_freeze.rs",
+      "bytes": 2980,
+      "sha256": "c67a790aea0666b9e6045455e823e1680b3101c1fc19c834ad9d1cbc848e917e"
     },
     {
       "path": "src/framebuffer.rs",
@@ -98,8 +109,38 @@
     },
     {
       "path": "src/lib.rs",
-      "bytes": 321,
-      "sha256": "89a9a75dfa3d99205961a359eee2020327fd204a28f10fa4eee8edae795245e2"
+      "bytes": 1211,
+      "sha256": "86c39dff154ab3b1deb4127b2447f895ce9ac363b466446e8d17d5e38a7a8c13"
+    },
+    {
+      "path": "src/metal_accel_probe.rs",
+      "bytes": 13894,
+      "sha256": "177dc83cbbcb667533373266384740e225ff4f39b8d7d546372d955a3c49b29f"
+    },
+    {
+      "path": "src/metal_acceptance.rs",
+      "bytes": 3955,
+      "sha256": "b0a96f9527ff459b683e312d9d1bb5583cec8d53bcbe41030fd39dad3c045afe"
+    },
+    {
+      "path": "src/metal_d10_gates.rs",
+      "bytes": 15768,
+      "sha256": "99d3b05b3ecc78420f84afe5b0ac718c0d69ef49cfb14a419053bc25c0829149"
+    },
+    {
+      "path": "src/metal_guest_probe.rs",
+      "bytes": 14573,
+      "sha256": "742b1e2465369fe944b158d680512c71a865619f86bf30131929e2fd3f637c2e"
+    },
+    {
+      "path": "src/metal_public_abi.rs",
+      "bytes": 9633,
+      "sha256": "22512b2bd3516bd595db85d7fb8173cd87b0890ee3c456b083c3c8c91354f181"
+    },
+    {
+      "path": "src/metal_transport.rs",
+      "bytes": 23696,
+      "sha256": "7c9b934363a376e01663848b427c82b4ddd70edb079444364ee4c6bd5382be0e"
     },
     {
       "path": "src/rasterizer.rs",
@@ -188,8 +229,8 @@
     },
     {
       "path": "tests/gpu_render_path.rs",
-      "bytes": 6790,
-      "sha256": "30bd5065653660cb65c4f7d10bc19a728e00c89742a4a7b2be9c968de20bb1c7"
+      "bytes": 6799,
+      "sha256": "05ac22d5cf3c5db4c5e01c1bc67507d3c861ec96e40ccf82f0e2d38fe1b3883f"
     },
     {
       "path": "tests/gpu_sync.rs",
@@ -205,6 +246,11 @@
       "path": "tests/gpu_virtual.rs",
       "bytes": 4334,
       "sha256": "602a3aac41c6d71b7fc692fcc633261ed7f9bb2f73449a9de74c73bb0c6cefb5"
+    },
+    {
+      "path": "tests/metal_acceptance_contract.rs",
+      "bytes": 17036,
+      "sha256": "fee6456becb4d38ba8a935cff715f06a34997848c647c9b508a3b04bce23f7d8"
     },
     {
       "path": "tests/sgpu_submission.rs",

@@ -7,7 +7,7 @@
 //! "ABI present" as "Metal works".
 //!
 //! Display-path freeze (M1) and Design D10 honesty (M0) remain unchanged.
-//! Guest Metal remains unverified.
+//! See `docs/research/METAL_DRIVER_TRACK.md`.
 
 use crate::display_path_freeze::{freeze_under_metal_track, DisplayPathFreeze};
 use crate::metal_acceptance::MetalAcceptanceReport;

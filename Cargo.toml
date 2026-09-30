@@ -18,7 +18,7 @@ vulkan = ["dep:ash"]
 # transport sketch (buffer/copy shapes), non-Metal host accel probe, guest Metal
 # probe harness (executed + structured fail reasons), D10 transcript evaluator.
 # Does not invent guest Metal; metal_verified only on live GuestLive + D10
-# evidence. Guest Metal remains unverified.
+# evidence. See docs/research/METAL_DRIVER_TRACK.md.
 metal_track = []
 
 [[example]]
