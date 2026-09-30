@@ -6,7 +6,8 @@
 //! attempt is expected to fail honestly.
 //!
 //! This module never passes without a real guest Metal device, never sets
-//! `metal_verified`, and does not invent enumeration success. Guest Metal remains unverified.
+//! `metal_verified`, and does not invent enumeration success. See
+//! `docs/research/METAL_DRIVER_TRACK.md`.
 
 use serde::{Deserialize, Serialize};
 

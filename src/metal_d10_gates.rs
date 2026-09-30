@@ -7,7 +7,7 @@
 //! session **and** every D10 evidence token appears in that one transcript.
 //! Fixtures and host-process transcripts stay `metal_verified=false`.
 //!
-//! Guest Metal remains unverified.
+//! See `docs/research/METAL_DRIVER_TRACK.md`.
 
 use serde::{Deserialize, Serialize};
 

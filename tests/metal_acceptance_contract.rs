@@ -11,10 +11,13 @@
 //! (absent guest → all gates fail honestly; fixtures stay unverified) while
 //! keeping default-host `metal_verified=false`.
 
+use std::fs;
+use std::path::{Path, PathBuf};
 
 use nextcore_gpu::canonical_spec::GpuCapabilities;
 use nextcore_gpu::display_path_freeze::{
     freeze_under_metal_track, DisplayPathFreeze, ADP_AIC_IRQ_LINE, ADP_MMIO_WINDOW_ID,
+    M1_FREEZE_DOC_MARKER,
 };
 use nextcore_gpu::metal_acceptance::{
     MetalAcceptanceError, MetalAcceptanceGate, MetalAcceptanceReport,
@@ -30,12 +33,12 @@ use nextcore_gpu::metal_guest_probe::{
     GuestMetalProbe, GuestMetalRuntimePresence, M5_GUEST_METAL_PROBE_DOC_MARKER,
 };
 use nextcore_gpu::metal_public_abi::{
-    MetalAbiReject, MetalGuestCapability, MetalGuestOp, MetalPublicAbi,
+    MetalAbiReject, MetalGuestCapability, MetalGuestOp, MetalPublicAbi, M2_PUBLIC_ABI_DOC_MARKER,
 };
 use nextcore_gpu::metal_transport::{
     BufferCopyShape, BufferCreateShape, BufferDestroyShape, MetalTransport, MetalTransportHeader,
     MetalTransportOpcode, MetalTransportReject, MetalTransportShape, METAL_TRANSPORT_MAGIC,
-    METAL_TRANSPORT_VERSION,
+    METAL_TRANSPORT_VERSION, M3_TRANSPORT_DOC_MARKER,
 };
 use nextcore_gpu::virtual_device::{CommandBuffer, GpuCommand, VirtualMetalDevice};
 
@@ -361,4 +364,86 @@ fn metal_track_m6_d10_gates_evaluator_absent_guest() {
     let probe = gates.guest_probe().run_probe_attempt();
     assert!(probe.asserts_honest_fail_without_device());
     assert!(!VirtualMetalDevice::new(GpuCapabilities::default_amd()).supports_metal());
+}
+
+/// CI lock: remapping ADP window/IRQ without updating freeze docs fails.
+#[test]
+fn metal_track_docs_lock_adp_window_and_irq_line() {
+    let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+
+    let crate_freeze = manifest.join("DISPLAY_PATH_FREEZE.md");
+    assert!(
+        crate_freeze.is_file(),
+        "DISPLAY_PATH_FREEZE.md must ship with nextcore-gpu"
+    );
+    assert_doc_contains_freeze_marker(&crate_freeze);
+
+    // Monorepo checkout: research track + bridge headers must stay aligned.
+    if let Some(repo_root) = manifest.ancestors().nth(3) {
+        let track_doc = repo_root.join("docs/research/METAL_DRIVER_TRACK.md");
+        if track_doc.is_file() {
+            assert_doc_contains_freeze_marker(&track_doc);
+            let track = fs::read_to_string(&track_doc).expect("read METAL_DRIVER_TRACK.md");
+            assert!(
+                track.contains("window `0x6`") && track.contains("IRQ line `2`"),
+                "METAL_DRIVER_TRACK.md M1 freeze table must list window `0x6` and IRQ line `2`"
+            );
+            assert!(
+                track.contains(M2_PUBLIC_ABI_DOC_MARKER),
+                "METAL_DRIVER_TRACK.md must contain `{M2_PUBLIC_ABI_DOC_MARKER}` for M2"
+            );
+            assert!(
+                track.contains(M3_TRANSPORT_DOC_MARKER),
+                "METAL_DRIVER_TRACK.md must contain `{M3_TRANSPORT_DOC_MARKER}` for M3"
+            );
+            assert!(
+                track.contains(M4_ACCEL_PROBE_DOC_MARKER),
+                "METAL_DRIVER_TRACK.md must contain `{M4_ACCEL_PROBE_DOC_MARKER}` for M4"
+            );
+            assert!(
+                track.contains(M5_GUEST_METAL_PROBE_DOC_MARKER),
+                "METAL_DRIVER_TRACK.md must contain `{M5_GUEST_METAL_PROBE_DOC_MARKER}` for M5"
+            );
+            assert!(
+                track.contains(M6_D10_GATES_DOC_MARKER),
+                "METAL_DRIVER_TRACK.md must contain `{M6_D10_GATES_DOC_MARKER}` for M6"
+            );
+        }
+
+        let ise_bridge = manifest.join("../nextcore-ise/runtime/preos_bridge.h");
+        if ise_bridge.is_file() {
+            assert_header_freeze(&ise_bridge);
+        }
+        let sandbox_bridge = repo_root.join("sandbox/efi/preos_bridge.h");
+        if sandbox_bridge.is_file() {
+            assert_header_freeze(&sandbox_bridge);
+        }
+    }
+}
+
+fn assert_doc_contains_freeze_marker(path: &Path) {
+    let text = fs::read_to_string(path).unwrap_or_else(|e| {
+        panic!("read {}: {e}", path.display());
+    });
+    assert!(
+        text.contains(M1_FREEZE_DOC_MARKER),
+        "{} must contain `{M1_FREEZE_DOC_MARKER}` when ADP wiring changes",
+        path.display()
+    );
+}
+
+fn assert_header_freeze(path: &Path) {
+    let text = fs::read_to_string(path).unwrap_or_else(|e| {
+        panic!("read {}: {e}", path.display());
+    });
+    assert!(
+        text.contains("#define VF_M1_MMIO_WINDOW_ADP") && text.contains("0x6"),
+        "{} must keep VF_M1_MMIO_WINDOW_ADP as 0x6 (update METAL_DRIVER_TRACK.md if remapping)",
+        path.display()
+    );
+    assert!(
+        text.contains("#define VF_M1_ADP_IRQ_LINE") && text.contains("UINT32_C(2)"),
+        "{} must keep VF_M1_ADP_IRQ_LINE as 2 (update METAL_DRIVER_TRACK.md if remapping)",
+        path.display()
+    );
 }

@@ -1,18 +1,11 @@
 {
-  "schema": "26x86.repository/2",
+  "schema": "26x86.repository/3",
   "name": "Nextcore-GPU",
   "owner": "26x86",
   "public": true,
   "role": "nextcore-module",
   "crate": "nextcore-gpu",
-  "description": "Graphics resource contracts, software rendering, and optional ordered host Vulkan compute with bounded native pipeline reuse.",
-  "development": {
-    "branch": "codex/gpu-portable-devices",
-    "base_commit": "84b881e8129774acee3e4faf944e833c407711fd",
-    "updated_utc": "2026-09-08T15:28:00.180655+00:00",
-    "dependency_revisions": {},
-    "integration": "Git submodule with an immutable gitlink; workspace source patches for local development"
-  },
+  "description": "GPU compatibility, command contracts and host compute backends",
   "release_provenance": {
     "schema": "26x86.repository/1",
     "name": "Nextcore-GPU",
@@ -30,5 +23,18 @@
     "previous_head": "29701f17ea98b64bbabd05d75a7e09a25f64f246",
     "dependency_tags": {},
     "export_method": "immutable git objects applied to existing main; manifest dependency rewrite only"
+  },
+  "publication": {
+    "snapshot": "engineering-preview-20260930",
+    "source_revision": "65909c23d2c62001c293a6c8a2f4ff024004100c",
+    "source_path": "nextcore/crates/nextcore-gpu",
+    "previous_public_revision": "fd7d99f2e8e613f6082590edb8f88d4546a6319f",
+    "method": "Immutable reviewed Git blobs applied to existing public history",
+    "integration": "Tracked integration source; independent Git dependencies pin exact public revisions",
+    "dependencies": {},
+    "macos_boot_verified": false,
+    "metal_verified": false,
+    "physical_installation_verified": false,
+    "device_qualification_verified": false
   }
 }

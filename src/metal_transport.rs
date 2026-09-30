@@ -3,7 +3,7 @@
 //! Defines clean-room message shapes for buffer create/destroy/copy and
 //! validates wire frames. Parsing a well-formed buffer/copy shape does **not**
 //! allocate guest buffers, run a queue, or invent a Metal device. Queue-class
-//! opcodes are rejected explicitly. Guest Metal remains unverified.
+//! opcodes are rejected explicitly. See `docs/research/METAL_DRIVER_TRACK.md`.
 
 use crate::metal_acceptance::MetalAcceptanceReport;
 use crate::metal_public_abi::MetalPublicAbi;

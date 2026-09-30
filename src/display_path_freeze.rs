@@ -1,6 +1,16 @@
-//! Preserve project-defined logical display wiring while evaluating Metal contracts.
-//! These authored test identifiers are not Apple physical register addresses.
-//! This contract does not establish guest Metal support.
+//! Metal Driver Track M1 — display-path freeze contract.
+//!
+//! ADP L1 / GOP / M1Framebuffer remain the guest scanout path. Metal track
+//! feature flags and [`crate::metal_acceptance`] must never remap or clear the
+//! graph-local ADP MMIO window or AIC display IRQ line.
+//!
+//! Locked values (must match `docs/research/METAL_DRIVER_TRACK.md` M1 freeze
+//! table, `VF_M1_MMIO_WINDOW_ADP`, and `VF_M1_ADP_IRQ_LINE`):
+//! - MMIO window id `0x6` (`M1_LOGICAL_DISPLAY_BASE >> 12`)
+//! - AIC IRQ line `2` (Rust `DISPLAY_SOURCE`)
+//!
+//! Remapping either constant without updating the Metal track research doc is
+//! a contract failure. See `docs/research/METAL_DRIVER_TRACK.md`.
 
 use crate::metal_acceptance::MetalAcceptanceReport;
 
@@ -10,7 +20,7 @@ pub const ADP_MMIO_WINDOW_ID: u32 = 0x6;
 /// Graph-local ADP vblank / present AIC line (`VF_M1_ADP_IRQ_LINE` / `DISPLAY_SOURCE`).
 pub const ADP_AIC_IRQ_LINE: u32 = 2;
 
-/// Machine-checkable identifier for the project-defined display contract.
+/// Machine-checkable marker string required in `METAL_DRIVER_TRACK.md`.
 pub const M1_FREEZE_DOC_MARKER: &str = "M1_DISPLAY_PATH_FREEZE:window=0x6,irq=2";
 
 /// Immutable freeze snapshot. Metal acceptance state cannot alter these ids.
