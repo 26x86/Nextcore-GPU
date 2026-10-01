@@ -1,0 +1,1190 @@
+{
+  "schema": 1,
+  "module": "nextcore-gpu",
+  "public_repository": "https://github.com/26x86/Nextcore-GPU.git",
+  "current_published_prior_handoff_revision": "e8e841baf18cefea67a0fbc1e79992bca293d5f3",
+  "export_commit": "9b56f64fa82c63011158ca3a68365119df10739c",
+  "export_commit_parents": [],
+  "export_tree": "7bf22c6cd1ef99d7f0bb5af6f345e5905d5a12ef",
+  "original_public_parent_source_commit": "93e4a9ebc1a05e2cbec78125a0186ca1b71d98d6",
+  "original_public_source_tree_URL": "https://github.com/26x86/26x86/tree/93e4a9ebc1a05e2cbec78125a0186ca1b71d98d6/nextcore/crates/nextcore-gpu",
+  "archive_kind": "Historical unfinished public module export variants; original unrelated Git commit identity retained by ordinary merge",
+  "current_active_source_modified": false,
+  "preservation_scope": "Exact older public variants differing from current module source, plus the original source license. Export paths already equal to active public source remain preserved by both Git histories.",
+  "attribute_boundary": "Historical .gitattributes and .gitignore are stored as inert metadata filenames. Original paths remain in the original export commit and in each file record. Archive-only attributes disable text normalization and whitespace diagnostics on preserved variants.",
+  "verification_boundary": "Source byte and Git ancestry verification only. No compiler, test, EFI, guest boot, macOS, Metal or device acceptance was executed by this archival task.",
+  "source_tree_inventory": [
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "5dabb2b27b17fb46a94713256fba0372eaa68784",
+      "bytes": 28,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "2c6e23fcd4d45ac8148f7586f6dca37fb28d59e8",
+      "bytes": 270,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "ca98cd96efdc228b0c0d0e264bfc0ce9ddadfdd7",
+      "bytes": 20,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "Cargo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "4cf576aca8636cf723713aa8969ba3548e927689",
+      "bytes": 780,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "DISPLAY_PATH_FREEZE.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "b796e37d3d480c88898162e6f740979d3e56bb77",
+      "bytes": 655,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "LICENSE.txt",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "f7389913f3fd1cb41276bb098a352b0e27e7e879",
+      "bytes": 1851,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "PORTABLE_VULKAN_DEVICES.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "973f8d0d082c5dab1b6db0ee92e516ac4dfe3bb1",
+      "bytes": 4262,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "c5a4809da73dfd66d3aa82d29a29e36f7e9239ae",
+      "bytes": 317,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "SGPU_COMPUTE.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "75c3d8abb3848511c198a92640bba03bfa44cd5f",
+      "bytes": 4886,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "VULKAN_COMPUTE.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "d16064aba20b3df8a98cad76f13951cfff98382b",
+      "bytes": 12894,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "examples/vulkan_compute.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "880f8114a58fc4852706d573e8f4db9da116c83a",
+      "bytes": 18007,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "repository-files.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "b879ba6aab4373a1591deadade3fe957ff8bdd4e",
+      "bytes": 11653,
+      "blob_already_in_published_prior_history": false
+    },
+    {
+      "path": "repository.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "ce3693e9393697fd083932e64a8ab8a2bc52ade2",
+      "bytes": 466,
+      "blob_already_in_published_prior_history": false
+    },
+    {
+      "path": "src/adapters/amd.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "d5e983a4fb06e8bc61584ffe80872d01c5b857a5",
+      "bytes": 1679,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/adapters/intel.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "77e66d0546efce88332f73f313e723170d30d83a",
+      "bytes": 1690,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/adapters/mod.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "01be54eba8b3c78f40087ba96ad16dccc67f06f4",
+      "bytes": 570,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/adapters/nvidia.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "06cab58521297866d3828527318fe38c44d6efd4",
+      "bytes": 1699,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/canonical_spec.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "388f43fd7f99903456851d25aa9abb135f7b0df4",
+      "bytes": 2573,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/command_executor.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "25e103c22707ed9305ace9ae6338c2cf891d69f1",
+      "bytes": 21847,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/compute.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "db639d35ca240ed5ef143efefcc2664a90ccb811",
+      "bytes": 9778,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/display_path_freeze.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "ec81d6922840e3474668488453b6316a47fffbcc",
+      "bytes": 2980,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/framebuffer.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "9f5802814bbebb738d21cdf48f69900ad4e821db",
+      "bytes": 9834,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/lib.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "7617c78e468ef97e1513103e8a6f7059d1c23c3f",
+      "bytes": 1211,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/metal_accel_probe.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "9815f64409ccb69a8af78cba86e4ec0047312114",
+      "bytes": 13728,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/metal_acceptance.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "d87780ba396a96965607ee1eec7e1e3b933b8182",
+      "bytes": 3955,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/metal_d10_gates.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "6fb99c5b45c0aceec7b3c94ff35ec2d6461f236b",
+      "bytes": 15768,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/metal_guest_probe.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e2dee3380b11ce4ef4f9533501bc0611589cbfe3",
+      "bytes": 14573,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/metal_public_abi.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "4704412388ac786daddbb8ad637db454b7fb113b",
+      "bytes": 9633,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/metal_transport.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "2bebec87df4987a1ecb44b51c7d5f34958bddd91",
+      "bytes": 23696,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/rasterizer.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "41b51a8c14b867ad9b80506acc572b16574a968b",
+      "bytes": 11570,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/render_pipeline.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "2503f921c5aa2200c3801403ec2bd27e41499ffd",
+      "bytes": 7317,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/sgpu_command.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "1fdc34eee2d14861dbc0824be3557c3258ffa38f",
+      "bytes": 6748,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/sgpu_compute.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "83396432eecd7071b09d304064280e56f1a4c276",
+      "bytes": 12438,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/sync.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "0c636f1f54a46fb6ec0ca8c07679ca103fb1a2c6",
+      "bytes": 6713,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/texture.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "433edaf29b3cee01b4033195c3c145b0398249d4",
+      "bytes": 8430,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/translator.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "4b851db28d011e79260dc44d23ef3d6ec6e82b5f",
+      "bytes": 2151,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/virtual_device.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "bfe0bca5bd693327e70b0fc8662bfd3ddac82b6b",
+      "bytes": 5714,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "src/vulkan_compute.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "59b2bdb7ce2a99ecb0d510ae2aaca7e2cba15ae9",
+      "bytes": 64212,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/fixtures/storage_transform.comp",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "9b5206fb5ff07e66db7525a97b6a8710e80e144e",
+      "bytes": 381,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/fixtures/storage_transform.spv",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "6e9f4620a4a2c2a3dd5d14cde259a516b5a267f5",
+      "bytes": 1068,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_compute.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "c963c8074ac1342bf15453db158f6baafead017c",
+      "bytes": 5689,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_executor.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "3bcd1182115be09f6abf0f95b6cfac9dfd38a37f",
+      "bytes": 6647,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_executor_compute.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "fa36ddd81f6379c7178e01670fc41a3053cd6dcd",
+      "bytes": 6227,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_framebuffer.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "a5fe10b92452bd24026b86fbf7c76dd9d597a96c",
+      "bytes": 3521,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_pipeline.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "1a1f5c034d0adb55446e84dff9dee3ee5da1f3a6",
+      "bytes": 4647,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_raster.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "26d035ef1e45e670e13259b32a1043199cef73cf",
+      "bytes": 4336,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_render_path.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "19498009642b8d58b5c4a47426ce5465fc8161d2",
+      "bytes": 6799,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_sync.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "781ce35780aabc2745a38aaa5bf6a65a61259a30",
+      "bytes": 3108,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_texture.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "a0107beeeb570bfb7c37aabcbbbf8cc91d840c41",
+      "bytes": 4443,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/gpu_virtual.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e9515bbfc083f9eba7b6f7da93441cbf109fc81e",
+      "bytes": 4334,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/metal_acceptance_contract.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e0fafebb1d08b39fd7a55988d3fa1802eb8beed7",
+      "bytes": 17036,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "tests/sgpu_submission.rs",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "fc36c341644e063413e69f9949b0c0e08e3c9b90",
+      "bytes": 11145,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "7d04c8f8a7b87ed5040df23ea84817d5bdffa56e",
+      "bytes": 2525,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/cargo-lock.toml",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "28439a7fff51f4cee783069d94d52e65d63ea924",
+      "bytes": 4228,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/devices.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "55f05ff4135a8738547cfc9123b4020d8ead6dd7",
+      "bytes": 4126,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/devices.stderr.txt",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/legacy.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "3d025ed7ec113e5fea35d3b40541f5701b72d520",
+      "bytes": 16069,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/legacy.stderr.txt",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/receipt.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "d6e3a4111dc99ed6ee62715420dbec533f79247c",
+      "bytes": 10278,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/uuid.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "3d025ed7ec113e5fea35d3b40541f5701b72d520",
+      "bytes": 16069,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/uuid.stderr.txt",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-devices.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "988e06e670e94c74bb099bfc552a05db721db62b",
+      "bytes": 166,
+      "blob_already_in_published_prior_history": false
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/windows-unit-tests.stderr.txt",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stderr.txt",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "95302be6294554bf9b744b757095c7cb8a926c0e",
+      "bytes": 162,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stdout.txt",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/sgpu-wire-rx6800xt-20260908/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "38f747769436ee52200392bd9eac52426ade2e7a",
+      "bytes": 3017,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/sgpu-wire-rx6800xt-20260908/hardware-example.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "8acc97f79010d7dd77ee9e331d75ef3bfe8424de",
+      "bytes": 13700,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/sgpu-wire-rx6800xt-20260908/receipt.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "5df580e66f0a6614426f18879757f67b3df26f14",
+      "bytes": 6605,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "84e9f58d60d861627e7b5fae40da3b5f44dae242",
+      "bytes": 3429,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/cargo-lock.toml",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "28439a7fff51f4cee783069d94d52e65d63ea924",
+      "bytes": 4228,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/hardware-example.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "3a4b917b16f639599780d1bbd471e111c021e2c7",
+      "bytes": 9698,
+      "blob_already_in_published_prior_history": true
+    },
+    {
+      "path": "validation/windows-rx6800xt-20260908/receipt.json",
+      "mode": "100644",
+      "type": "blob",
+      "git_blob_sha1": "158cda5e43bc23f9ac0a9383e2bb1ab1e95ee24b",
+      "bytes": 6789,
+      "blob_already_in_published_prior_history": true
+    }
+  ],
+  "original_public_source_comparisons": [
+    {
+      "export_path": ".gitattributes",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/.gitattributes",
+      "original_blob": "21a3ef2486b71e0cef58be38be057fe75e3bad28",
+      "export_blob": "5dabb2b27b17fb46a94713256fba0372eaa68784",
+      "exact_original_public_source_blob": false
+    },
+    {
+      "export_path": ".github/workflows/ci.yml",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/.github/workflows/ci.yml",
+      "original_blob": "6cc7f305ce8b9bb7334e2df617a08e55d3055caf",
+      "export_blob": "2c6e23fcd4d45ac8148f7586f6dca37fb28d59e8",
+      "exact_original_public_source_blob": false
+    },
+    {
+      "export_path": ".gitignore",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/.gitignore",
+      "original_blob": "ca98cd96efdc228b0c0d0e264bfc0ce9ddadfdd7",
+      "export_blob": "ca98cd96efdc228b0c0d0e264bfc0ce9ddadfdd7",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "Cargo.toml",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/Cargo.toml",
+      "original_blob": "4cf576aca8636cf723713aa8969ba3548e927689",
+      "export_blob": "4cf576aca8636cf723713aa8969ba3548e927689",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "DISPLAY_PATH_FREEZE.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/DISPLAY_PATH_FREEZE.md",
+      "original_blob": "b796e37d3d480c88898162e6f740979d3e56bb77",
+      "export_blob": "b796e37d3d480c88898162e6f740979d3e56bb77",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "LICENSE.txt",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/LICENSE.txt",
+      "original_blob": "f7389913f3fd1cb41276bb098a352b0e27e7e879",
+      "export_blob": "f7389913f3fd1cb41276bb098a352b0e27e7e879",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "PORTABLE_VULKAN_DEVICES.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/PORTABLE_VULKAN_DEVICES.md",
+      "original_blob": "973f8d0d082c5dab1b6db0ee92e516ac4dfe3bb1",
+      "export_blob": "973f8d0d082c5dab1b6db0ee92e516ac4dfe3bb1",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "README.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/README.md",
+      "original_blob": "ac966b82a0d87717ed3354104e11d9282192273d",
+      "export_blob": "c5a4809da73dfd66d3aa82d29a29e36f7e9239ae",
+      "exact_original_public_source_blob": false
+    },
+    {
+      "export_path": "SGPU_COMPUTE.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/SGPU_COMPUTE.md",
+      "original_blob": "75c3d8abb3848511c198a92640bba03bfa44cd5f",
+      "export_blob": "75c3d8abb3848511c198a92640bba03bfa44cd5f",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "VULKAN_COMPUTE.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/VULKAN_COMPUTE.md",
+      "original_blob": "d16064aba20b3df8a98cad76f13951cfff98382b",
+      "export_blob": "d16064aba20b3df8a98cad76f13951cfff98382b",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "examples/vulkan_compute.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/examples/vulkan_compute.rs",
+      "original_blob": "880f8114a58fc4852706d573e8f4db9da116c83a",
+      "export_blob": "880f8114a58fc4852706d573e8f4db9da116c83a",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "repository-files.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/repository-files.json",
+      "original_blob": "b144e0ddc56fcd7ff9f98078aaf7c43ab8d74e54",
+      "export_blob": "b879ba6aab4373a1591deadade3fe957ff8bdd4e",
+      "exact_original_public_source_blob": false
+    },
+    {
+      "export_path": "repository.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/repository.json",
+      "original_blob": "99ebc9bc6fb8ce3bb0efaddec691065a098eda98",
+      "export_blob": "ce3693e9393697fd083932e64a8ab8a2bc52ade2",
+      "exact_original_public_source_blob": false
+    },
+    {
+      "export_path": "src/adapters/amd.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/adapters/amd.rs",
+      "original_blob": "d5e983a4fb06e8bc61584ffe80872d01c5b857a5",
+      "export_blob": "d5e983a4fb06e8bc61584ffe80872d01c5b857a5",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/adapters/intel.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/adapters/intel.rs",
+      "original_blob": "77e66d0546efce88332f73f313e723170d30d83a",
+      "export_blob": "77e66d0546efce88332f73f313e723170d30d83a",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/adapters/mod.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/adapters/mod.rs",
+      "original_blob": "01be54eba8b3c78f40087ba96ad16dccc67f06f4",
+      "export_blob": "01be54eba8b3c78f40087ba96ad16dccc67f06f4",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/adapters/nvidia.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/adapters/nvidia.rs",
+      "original_blob": "06cab58521297866d3828527318fe38c44d6efd4",
+      "export_blob": "06cab58521297866d3828527318fe38c44d6efd4",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/canonical_spec.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/canonical_spec.rs",
+      "original_blob": "388f43fd7f99903456851d25aa9abb135f7b0df4",
+      "export_blob": "388f43fd7f99903456851d25aa9abb135f7b0df4",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/command_executor.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/command_executor.rs",
+      "original_blob": "25e103c22707ed9305ace9ae6338c2cf891d69f1",
+      "export_blob": "25e103c22707ed9305ace9ae6338c2cf891d69f1",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/compute.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/compute.rs",
+      "original_blob": "db639d35ca240ed5ef143efefcc2664a90ccb811",
+      "export_blob": "db639d35ca240ed5ef143efefcc2664a90ccb811",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/display_path_freeze.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/display_path_freeze.rs",
+      "original_blob": "ec81d6922840e3474668488453b6316a47fffbcc",
+      "export_blob": "ec81d6922840e3474668488453b6316a47fffbcc",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/framebuffer.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/framebuffer.rs",
+      "original_blob": "9f5802814bbebb738d21cdf48f69900ad4e821db",
+      "export_blob": "9f5802814bbebb738d21cdf48f69900ad4e821db",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/lib.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/lib.rs",
+      "original_blob": "7617c78e468ef97e1513103e8a6f7059d1c23c3f",
+      "export_blob": "7617c78e468ef97e1513103e8a6f7059d1c23c3f",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/metal_accel_probe.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/metal_accel_probe.rs",
+      "original_blob": "9815f64409ccb69a8af78cba86e4ec0047312114",
+      "export_blob": "9815f64409ccb69a8af78cba86e4ec0047312114",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/metal_acceptance.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/metal_acceptance.rs",
+      "original_blob": "d87780ba396a96965607ee1eec7e1e3b933b8182",
+      "export_blob": "d87780ba396a96965607ee1eec7e1e3b933b8182",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/metal_d10_gates.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/metal_d10_gates.rs",
+      "original_blob": "6fb99c5b45c0aceec7b3c94ff35ec2d6461f236b",
+      "export_blob": "6fb99c5b45c0aceec7b3c94ff35ec2d6461f236b",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/metal_guest_probe.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/metal_guest_probe.rs",
+      "original_blob": "e2dee3380b11ce4ef4f9533501bc0611589cbfe3",
+      "export_blob": "e2dee3380b11ce4ef4f9533501bc0611589cbfe3",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/metal_public_abi.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/metal_public_abi.rs",
+      "original_blob": "4704412388ac786daddbb8ad637db454b7fb113b",
+      "export_blob": "4704412388ac786daddbb8ad637db454b7fb113b",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/metal_transport.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/metal_transport.rs",
+      "original_blob": "2bebec87df4987a1ecb44b51c7d5f34958bddd91",
+      "export_blob": "2bebec87df4987a1ecb44b51c7d5f34958bddd91",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/rasterizer.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/rasterizer.rs",
+      "original_blob": "41b51a8c14b867ad9b80506acc572b16574a968b",
+      "export_blob": "41b51a8c14b867ad9b80506acc572b16574a968b",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/render_pipeline.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/render_pipeline.rs",
+      "original_blob": "2503f921c5aa2200c3801403ec2bd27e41499ffd",
+      "export_blob": "2503f921c5aa2200c3801403ec2bd27e41499ffd",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/sgpu_command.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/sgpu_command.rs",
+      "original_blob": "1fdc34eee2d14861dbc0824be3557c3258ffa38f",
+      "export_blob": "1fdc34eee2d14861dbc0824be3557c3258ffa38f",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/sgpu_compute.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/sgpu_compute.rs",
+      "original_blob": "83396432eecd7071b09d304064280e56f1a4c276",
+      "export_blob": "83396432eecd7071b09d304064280e56f1a4c276",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/sync.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/sync.rs",
+      "original_blob": "0c636f1f54a46fb6ec0ca8c07679ca103fb1a2c6",
+      "export_blob": "0c636f1f54a46fb6ec0ca8c07679ca103fb1a2c6",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/texture.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/texture.rs",
+      "original_blob": "433edaf29b3cee01b4033195c3c145b0398249d4",
+      "export_blob": "433edaf29b3cee01b4033195c3c145b0398249d4",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/translator.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/translator.rs",
+      "original_blob": "4b851db28d011e79260dc44d23ef3d6ec6e82b5f",
+      "export_blob": "4b851db28d011e79260dc44d23ef3d6ec6e82b5f",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/virtual_device.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/virtual_device.rs",
+      "original_blob": "bfe0bca5bd693327e70b0fc8662bfd3ddac82b6b",
+      "export_blob": "bfe0bca5bd693327e70b0fc8662bfd3ddac82b6b",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "src/vulkan_compute.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/src/vulkan_compute.rs",
+      "original_blob": "59b2bdb7ce2a99ecb0d510ae2aaca7e2cba15ae9",
+      "export_blob": "59b2bdb7ce2a99ecb0d510ae2aaca7e2cba15ae9",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/fixtures/storage_transform.comp",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/fixtures/storage_transform.comp",
+      "original_blob": "9b5206fb5ff07e66db7525a97b6a8710e80e144e",
+      "export_blob": "9b5206fb5ff07e66db7525a97b6a8710e80e144e",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/fixtures/storage_transform.spv",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/fixtures/storage_transform.spv",
+      "original_blob": "6e9f4620a4a2c2a3dd5d14cde259a516b5a267f5",
+      "export_blob": "6e9f4620a4a2c2a3dd5d14cde259a516b5a267f5",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_compute.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_compute.rs",
+      "original_blob": "c963c8074ac1342bf15453db158f6baafead017c",
+      "export_blob": "c963c8074ac1342bf15453db158f6baafead017c",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_executor.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_executor.rs",
+      "original_blob": "3bcd1182115be09f6abf0f95b6cfac9dfd38a37f",
+      "export_blob": "3bcd1182115be09f6abf0f95b6cfac9dfd38a37f",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_executor_compute.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_executor_compute.rs",
+      "original_blob": "fa36ddd81f6379c7178e01670fc41a3053cd6dcd",
+      "export_blob": "fa36ddd81f6379c7178e01670fc41a3053cd6dcd",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_framebuffer.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_framebuffer.rs",
+      "original_blob": "a5fe10b92452bd24026b86fbf7c76dd9d597a96c",
+      "export_blob": "a5fe10b92452bd24026b86fbf7c76dd9d597a96c",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_pipeline.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_pipeline.rs",
+      "original_blob": "1a1f5c034d0adb55446e84dff9dee3ee5da1f3a6",
+      "export_blob": "1a1f5c034d0adb55446e84dff9dee3ee5da1f3a6",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_raster.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_raster.rs",
+      "original_blob": "26d035ef1e45e670e13259b32a1043199cef73cf",
+      "export_blob": "26d035ef1e45e670e13259b32a1043199cef73cf",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_render_path.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_render_path.rs",
+      "original_blob": "19498009642b8d58b5c4a47426ce5465fc8161d2",
+      "export_blob": "19498009642b8d58b5c4a47426ce5465fc8161d2",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_sync.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_sync.rs",
+      "original_blob": "781ce35780aabc2745a38aaa5bf6a65a61259a30",
+      "export_blob": "781ce35780aabc2745a38aaa5bf6a65a61259a30",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_texture.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_texture.rs",
+      "original_blob": "a0107beeeb570bfb7c37aabcbbbf8cc91d840c41",
+      "export_blob": "a0107beeeb570bfb7c37aabcbbbf8cc91d840c41",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/gpu_virtual.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/gpu_virtual.rs",
+      "original_blob": "e9515bbfc083f9eba7b6f7da93441cbf109fc81e",
+      "export_blob": "e9515bbfc083f9eba7b6f7da93441cbf109fc81e",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/metal_acceptance_contract.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/metal_acceptance_contract.rs",
+      "original_blob": "e0fafebb1d08b39fd7a55988d3fa1802eb8beed7",
+      "export_blob": "e0fafebb1d08b39fd7a55988d3fa1802eb8beed7",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "tests/sgpu_submission.rs",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/tests/sgpu_submission.rs",
+      "original_blob": "fc36c341644e063413e69f9949b0c0e08e3c9b90",
+      "export_blob": "fc36c341644e063413e69f9949b0c0e08e3c9b90",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/README.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/README.md",
+      "original_blob": "7d04c8f8a7b87ed5040df23ea84817d5bdffa56e",
+      "export_blob": "7d04c8f8a7b87ed5040df23ea84817d5bdffa56e",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/cargo-lock.toml",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/cargo-lock.toml",
+      "original_blob": "28439a7fff51f4cee783069d94d52e65d63ea924",
+      "export_blob": "28439a7fff51f4cee783069d94d52e65d63ea924",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/devices.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/devices.json",
+      "original_blob": "55f05ff4135a8738547cfc9123b4020d8ead6dd7",
+      "export_blob": "55f05ff4135a8738547cfc9123b4020d8ead6dd7",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/devices.stderr.txt",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/devices.stderr.txt",
+      "original_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "export_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/legacy.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/legacy.json",
+      "original_blob": "3d025ed7ec113e5fea35d3b40541f5701b72d520",
+      "export_blob": "3d025ed7ec113e5fea35d3b40541f5701b72d520",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/legacy.stderr.txt",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/legacy.stderr.txt",
+      "original_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "export_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/receipt.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/receipt.json",
+      "original_blob": "d6e3a4111dc99ed6ee62715420dbec533f79247c",
+      "export_blob": "d6e3a4111dc99ed6ee62715420dbec533f79247c",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/uuid.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/uuid.json",
+      "original_blob": "3d025ed7ec113e5fea35d3b40541f5701b72d520",
+      "export_blob": "3d025ed7ec113e5fea35d3b40541f5701b72d520",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/uuid.stderr.txt",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/uuid.stderr.txt",
+      "original_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "export_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/windows-devices.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/windows-devices.json",
+      "original_blob": "a6b6dd59044e5865d61e9e710688147c12ff359e",
+      "export_blob": "988e06e670e94c74bb099bfc552a05db721db62b",
+      "exact_original_public_source_blob": false
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/windows-unit-tests.stderr.txt",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/windows-unit-tests.stderr.txt",
+      "original_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "export_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stderr.txt",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stderr.txt",
+      "original_blob": "95302be6294554bf9b744b757095c7cb8a926c0e",
+      "export_blob": "95302be6294554bf9b744b757095c7cb8a926c0e",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stdout.txt",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/bp28-portable-rx6800xt-20260909/wrong-uuid.stdout.txt",
+      "original_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "export_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/sgpu-wire-rx6800xt-20260908/README.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/sgpu-wire-rx6800xt-20260908/README.md",
+      "original_blob": "38f747769436ee52200392bd9eac52426ade2e7a",
+      "export_blob": "38f747769436ee52200392bd9eac52426ade2e7a",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/sgpu-wire-rx6800xt-20260908/hardware-example.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/sgpu-wire-rx6800xt-20260908/hardware-example.json",
+      "original_blob": "8acc97f79010d7dd77ee9e331d75ef3bfe8424de",
+      "export_blob": "8acc97f79010d7dd77ee9e331d75ef3bfe8424de",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/sgpu-wire-rx6800xt-20260908/receipt.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/sgpu-wire-rx6800xt-20260908/receipt.json",
+      "original_blob": "5df580e66f0a6614426f18879757f67b3df26f14",
+      "export_blob": "5df580e66f0a6614426f18879757f67b3df26f14",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/windows-rx6800xt-20260908/README.md",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/windows-rx6800xt-20260908/README.md",
+      "original_blob": "84e9f58d60d861627e7b5fae40da3b5f44dae242",
+      "export_blob": "84e9f58d60d861627e7b5fae40da3b5f44dae242",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/windows-rx6800xt-20260908/cargo-lock.toml",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/windows-rx6800xt-20260908/cargo-lock.toml",
+      "original_blob": "28439a7fff51f4cee783069d94d52e65d63ea924",
+      "export_blob": "28439a7fff51f4cee783069d94d52e65d63ea924",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/windows-rx6800xt-20260908/hardware-example.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/windows-rx6800xt-20260908/hardware-example.json",
+      "original_blob": "3a4b917b16f639599780d1bbd471e111c021e2c7",
+      "export_blob": "3a4b917b16f639599780d1bbd471e111c021e2c7",
+      "exact_original_public_source_blob": true
+    },
+    {
+      "export_path": "validation/windows-rx6800xt-20260908/receipt.json",
+      "original_public_source_path": "nextcore/crates/nextcore-gpu/validation/windows-rx6800xt-20260908/receipt.json",
+      "original_blob": "158cda5e43bc23f9ac0a9383e2bb1ab1e95ee24b",
+      "export_blob": "158cda5e43bc23f9ac0a9383e2bb1ab1e95ee24b",
+      "exact_original_public_source_blob": true
+    }
+  ],
+  "files": [
+    {
+      "original_relative_path": ".gitattributes",
+      "archive_relative_path": "metadata/original-gitattributes.txt",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "5dabb2b27b17fb46a94713256fba0372eaa68784",
+      "sha256": "4b0f1fc438f30f25abe421b7542e9f3803b8b5c15ca3695614222e2bc547a9fe",
+      "bytes": 28,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    },
+    {
+      "original_relative_path": ".github/workflows/ci.yml",
+      "archive_relative_path": ".github/workflows/ci.yml",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "2c6e23fcd4d45ac8148f7586f6dca37fb28d59e8",
+      "sha256": "c244cac65a52427ecdfc3ef2f0d8865a50d7ec6b08de84580ae3be74a3229439",
+      "bytes": 270,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    },
+    {
+      "original_relative_path": "README.md",
+      "archive_relative_path": "README.md",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "c5a4809da73dfd66d3aa82d29a29e36f7e9239ae",
+      "sha256": "11a676269e2ff02aefdf4783696b1eacc1dbf0eef54b74fd81737c0addb22a9f",
+      "bytes": 317,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    },
+    {
+      "original_relative_path": "repository-files.json",
+      "archive_relative_path": "repository-files.json",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "b879ba6aab4373a1591deadade3fe957ff8bdd4e",
+      "sha256": "2d2754b46e6f123620f170bccfbcaceefb6a757db858d0abcae1b28eba1271a8",
+      "bytes": 11653,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    },
+    {
+      "original_relative_path": "repository.json",
+      "archive_relative_path": "repository.json",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "ce3693e9393697fd083932e64a8ab8a2bc52ade2",
+      "sha256": "1d8e804ddebad838cfb93605245860dba0a56b86d5a605b44504f3c7a81c4944",
+      "bytes": 466,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    },
+    {
+      "original_relative_path": "src/metal_accel_probe.rs",
+      "archive_relative_path": "src/metal_accel_probe.rs",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "9815f64409ccb69a8af78cba86e4ec0047312114",
+      "sha256": "9db58cfc169956f7d7a39be8f91ee39fdcec932f75fb994015471020e9fbb12c",
+      "bytes": 13728,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    },
+    {
+      "original_relative_path": "validation/bp28-portable-rx6800xt-20260909/windows-devices.json",
+      "archive_relative_path": "validation/bp28-portable-rx6800xt-20260909/windows-devices.json",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "988e06e670e94c74bb099bfc552a05db721db62b",
+      "sha256": "71ab858806d0d29e6f1a3c42677af97f7df359932fcb927c70992260ae1a80c4",
+      "bytes": 166,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    },
+    {
+      "original_relative_path": "LICENSE.txt",
+      "archive_relative_path": "LICENSE.txt",
+      "source_revision": "9b56f64fa82c63011158ca3a68365119df10739c",
+      "git_blob_sha1": "f7389913f3fd1cb41276bb098a352b0e27e7e879",
+      "sha256": "77c458ccb6116400cf960f8951630bc3b8b34731b56ffbd736b95c2b78449104",
+      "bytes": 1851,
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "license_path": "LICENSE.txt"
+    }
+  ]
+}
