@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "module": "nextcore-gpu",
+  "public_repository": "https://github.com/26x86/Nextcore-GPU.git",
+  "authoritative_main_base": "b931a09c9f563fdd55deba29764e2b126c2a8353",
+  "legacy_main_revision": "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81",
+  "frozen_source_HEAD": "eaab9fcfded3a8ee298453397790f13edace5694",
+  "archive_kind": "Historical source variants from diverged public commit identities",
+  "purpose": "Preserve exact older conflicting source and license variants while the current module APIs and dependency pins remain active.",
+  "verification_boundary": "Git object ancestry and source bytes only; no compiler, runtime, guest boot or device acceptance has been executed for this handoff.",
+  "missing_commit_count": 3,
+  "missing_commits": [
+    {
+      "sha": "0f1ce959a2be59d684d15f0f287cff49e06c305f",
+      "parents": [
+        "8962199b5a7381850ef9aa9e72e98b45a8671d46",
+        "34d617cca37d563d13ed0b0c966e2557921c6125"
+      ],
+      "subject": "Merge pull request #1 from 26x86/codex/arm64e-boot-metal",
+      "commit_stats": ".github/workflows/ci.yml                           |   2 +\n README.md                                          |  94 +++++-\n SGPU_COMPUTE.md                                    |  81 +++++\n VULKAN_COMPUTE.md                                  | 101 ++++++\n examples/vulkan_compute.rs                         | 259 ++++++++++++++-\n repository-files.json                              | 111 +++++--\n repository.json                                    |  38 ++-\n src/command_executor.rs                            |  57 +++-\n src/compute.rs                                     |  11 +\n src/lib.rs                                         |   2 +\n src/sgpu_command.rs                                | 192 +++++++++++\n src/sgpu_compute.rs                                | 355 +++++++++++++++++++++\n src/vulkan_compute.rs                              | 304 ++++++++++++++----\n tests/gpu_executor.rs                              |   9 +-\n tests/gpu_executor_compute.rs                      | 188 +++++++++++\n tests/sgpu_submission.rs                           | 345 ++++++++++++++++++++\n validation/sgpu-wire-rx6800xt-20260908/README.md   |  47 +++\n .../sgpu-wire-rx6800xt-20260908/cross-build.log    |   2 +\n .../hardware-example.json                          |   1 +\n .../sgpu-wire-rx6800xt-20260908/receipt.json       | 120 +++++++\n validation/windows-rx6800xt-20260908/README.md     |  65 ++++\n .../windows-rx6800xt-20260908/cargo-lock.toml      | 167 ++++++++++\n .../windows-rx6800xt-20260908/cross-build.log      |  23 ++\n .../hardware-example.json                          |   1 +\n validation/windows-rx6800xt-20260908/receipt.json  | 123 +++++++\n 25 files changed, 2592 insertions(+), 106 deletions(-)"
+    },
+    {
+      "sha": "ba906581b4b1307aa482340f63fd60383473ef48",
+      "parents": [
+        "0f1ce959a2be59d684d15f0f287cff49e06c305f",
+        "eaab9fcfded3a8ee298453397790f13edace5694"
+      ],
+      "subject": "Merge pull request #2 from 26x86/codex/gpu-portable-devices",
+      "commit_stats": ".gitattributes                                     |   3 +\n .github/workflows/ci.yml                           |   8 +-\n PORTABLE_VULKAN_DEVICES.md                         |  64 ++\n README.md                                          |  20 +-\n VULKAN_COMPUTE.md                                  |  50 +-\n examples/vulkan_compute.rs                         |  30 +-\n repository-files.json                              | 132 +++-\n repository.json                                    |   4 +-\n src/compute.rs                                     |   8 +\n src/vulkan_compute.rs                              | 717 ++++++++++++++++++---\n .../bp28-portable-rx6800xt-20260909/README.md      |  43 ++\n .../cargo-lock.toml                                | 167 +++++\n .../cross-build.log                                |   2 +\n .../default-tests.log                              | 183 ++++++\n .../bp28-portable-rx6800xt-20260909/devices.json   | 214 ++++++\n .../devices.stderr.txt                             |   0\n .../bp28-portable-rx6800xt-20260909/legacy.json    |   1 +\n .../legacy.stderr.txt                              |   0\n .../bp28-portable-rx6800xt-20260909/receipt.json   | 390 +++++++++++\n .../software-lifecycle.log                         |  12 +\n .../bp28-portable-rx6800xt-20260909/uuid.json      |   1 +\n .../uuid.stderr.txt                                |   0\n .../vulkan-tests.log                               | 202 ++++++\n .../windows-devices.json                           |   5 +\n .../windows-tests-build.log                        |   2 +\n .../windows-unit-tests.log                         |  15 +\n .../windows-unit-tests.stderr.txt                  |   0\n .../wrong-uuid.stderr.txt                          |   1 +\n .../wrong-uuid.stdout.txt                          |   0\n 29 files changed, 2152 insertions(+), 122 deletions(-)"
+    },
+    {
+      "sha": "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81",
+      "parents": [
+        "ba906581b4b1307aa482340f63fd60383473ef48"
+      ],
+      "subject": "docs: enforce full English in doc comments and tests",
+      "commit_stats": "src/command_executor.rs  | 10 +++++-----\n tests/gpu_render_path.rs |  4 ++--\n 2 files changed, 7 insertions(+), 7 deletions(-)"
+    }
+  ],
+  "conflict_paths": [
+    "src/command_executor.rs",
+    "tests/gpu_render_path.rs"
+  ],
+  "files": [
+    {
+      "original_path": "src/command_executor.rs",
+      "archive_path": "7d23e4bdfe10/src/command_executor.rs",
+      "source_revisions": [
+        "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81"
+      ],
+      "bytes": 21934,
+      "sha256": "91d57a435b3931580a56a8076b83256a0e4e1e09cd513bf6e45a5f6c7bd1aadd",
+      "git_blob_sha1": "0d904c3cc6159973f78995ddba550eec2d34c1b3",
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "retained_active_path": "src/command_executor.rs"
+    },
+    {
+      "original_path": "tests/gpu_render_path.rs",
+      "archive_path": "7d23e4bdfe10/tests/gpu_render_path.rs",
+      "source_revisions": [
+        "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81"
+      ],
+      "bytes": 6809,
+      "sha256": "bb31a908623ea9f6ab92669ddf1b30e5ca088280262b9eba538737909066b52b",
+      "git_blob_sha1": "85bc00d5b1cc4075333ccd741c7de3ec12bda636",
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "retained_active_path": "tests/gpu_render_path.rs"
+    },
+    {
+      "original_path": "LICENSE.txt",
+      "archive_path": "7d23e4bdfe10/LICENSE.txt",
+      "source_revisions": [
+        "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81",
+        "eaab9fcfded3a8ee298453397790f13edace5694"
+      ],
+      "bytes": 1851,
+      "sha256": "77c458ccb6116400cf960f8951630bc3b8b34731b56ffbd736b95c2b78449104",
+      "git_blob_sha1": "f7389913f3fd1cb41276bb098a352b0e27e7e879",
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "retained_active_path": "LICENSE.txt"
+    },
+    {
+      "original_path": "src/command_executor.rs",
+      "archive_path": "eaab9fcfded3/src/command_executor.rs",
+      "source_revisions": [
+        "eaab9fcfded3a8ee298453397790f13edace5694"
+      ],
+      "bytes": 21954,
+      "sha256": "b64707b65269b193c3351b340ec6974f3692793e7e69e60492bed32a05628aca",
+      "git_blob_sha1": "4173cae68961b462e873cf8f87e7564175a0a0d4",
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "retained_active_path": "src/command_executor.rs"
+    },
+    {
+      "original_path": "tests/gpu_render_path.rs",
+      "archive_path": "eaab9fcfded3/tests/gpu_render_path.rs",
+      "source_revisions": [
+        "eaab9fcfded3a8ee298453397790f13edace5694"
+      ],
+      "bytes": 6790,
+      "sha256": "30bd5065653660cb65c4f7d10bc19a728e00c89742a4a7b2be9c968de20bb1c7",
+      "git_blob_sha1": "805b944f9bfc4fbfadb5f5faa4dfb6481768b02b",
+      "original_git_mode": "100644",
+      "archive_git_mode": "100644",
+      "retained_active_path": "tests/gpu_render_path.rs"
+    }
+  ],
+  "absent_paths": []
+}
