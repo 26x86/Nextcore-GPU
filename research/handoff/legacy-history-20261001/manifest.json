@@ -109,5 +109,44 @@
       "retained_active_path": "tests/gpu_render_path.rs"
     }
   ],
-  "absent_paths": []
+  "absent_paths": [],
+  "history_preservation": {
+    "verified_local_revision": "1436690204d14cae5f884d1920dd38ab64d3488f",
+    "source_baseline_reachable": true,
+    "all_observed_legacy_refs_and_HEAD_reachable": true,
+    "legacy_refs": [
+      {
+        "ref": "refs/heads/main",
+        "sha": "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81",
+        "reachable": true
+      },
+      {
+        "ref": "refs/remotes/origin/HEAD",
+        "sha": "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81",
+        "reachable": true
+      },
+      {
+        "ref": "refs/remotes/origin/main",
+        "sha": "7d23e4bdfe1041449c5eef97eeaeeda722f5ce81",
+        "reachable": true
+      },
+      {
+        "ref": "refs/tags/26x86-Nextcore-GPU-v0.1.0",
+        "sha": "29701f17ea98b64bbabd05d75a7e09a25f64f246",
+        "reachable": true
+      },
+      {
+        "ref": "refs/tags/26x86-Nextcore-GPU-v0.1.1",
+        "sha": "8962199b5a7381850ef9aa9e72e98b45a8671d46",
+        "reachable": true
+      },
+      {
+        "ref": "HEAD",
+        "sha": "eaab9fcfded3a8ee298453397790f13edace5694",
+        "reachable": true
+      }
+    ],
+    "missing_commit_identities_preserved": 3,
+    "remote_publication_status": "Not performed by this local handoff task"
+  }
 }
